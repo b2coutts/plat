@@ -24,3 +24,8 @@ class Ent:
 
     def get_rect(self):
         return self.xpos, self.ypos, self.width, self.height
+
+    def display(self):
+        print "pos: (%s,%s),  size: %sx%s,  speed: %s, grounded: %s" %\
+              (self.xpos, self.ypos, self.width, self.height, self.speed,\
+               self.grounded)

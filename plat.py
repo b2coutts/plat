@@ -6,6 +6,7 @@ from level import level, lvl_rects
 from Ent import *
 from params import *
 from util import *
+from collision import coll_move
 pygame.init()
 
 bgcolor = 255, 255, 255
@@ -22,6 +23,11 @@ while 1:
     time.sleep(FRAME_LENGTH)
     pr = pygame.key.get_pressed()
 
+    # check if user has fallen off platform
+    if user.grounded and (user.xpos+user.width < user.grounded[0] or
+                          user.xpos > user.grounded[0]+user.grounded[2]):
+        user.grounded = False
+
     jumping = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -35,6 +41,10 @@ while 1:
             # debug stuff
             if event.key == pygame.K_p:
                 print "levels: %s" % lvl_rects
+            elif event.unicode == '+':
+                FRAME_LENGTH /= 2.0
+            elif event.unicode == '-':
+                FRAME_LENGTH *= 2.0
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = event.pos
             new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(), blockimg)
@@ -43,7 +53,7 @@ while 1:
 
     sp = user.speed
     if user.grounded:
-        sp[0] = 0
+        sp[0] = sp[1] = 0
         if pr[keys.LEFT]:
             sp[0] = -RUN_SPEED
         elif pr[keys.RIGHT]:
@@ -69,43 +79,7 @@ while 1:
         # TODO: terminal velocity?
         sp[1] += GRAV_ACCEL
 
-    # update position with speed; check collisions
-    oldpos = oldx, oldy = user.xpos, user.ypos
-    user.xpos += sp[0]
-    user.ypos += sp[1]
-
-    if sp[0] <= 0 and sp[1] >= 0:
-        front = oldx, oldy + user.height
-    elif sp[0] >= 0 and sp[1] >= 0:
-        front = oldx + user.width, oldy + user.height
-    elif sp[0] >= 0 and sp[1] <= 0:
-        front = oldx + user.width, oldy
-    elif sp[0] <= 0 and sp[1] <= 0:
-        front = oldpos
-
-    #collisions = user.get_rect().collidelistall(lvl_rects)
-    collisions = [r for r in lvl_rects\
-                    if rect_coll(user.get_rect(), r, COLL_DIST)]
-    if collisions:
-        minhoriz, minvert = float('inf'), float('inf')
-        for rect in collisions:
-            wx1, wx2, wy1, wy2 = rect[0]-COLL_SEP, rect[0]+rect[1]+COLL_SEP,\
-                                 rect[1]-COLL_SEP, rect[1]+rect[3]+COLL_SEP
-            minhoriz = min(minhoriz, cast(front, sp, ((wx1,wy1), (wx1,wy2))),\
-                                     cast(front, sp, ((wx2,wy1), (wx2,wy2))),)
-            minvert  = min(minvert,  cast(front, sp, ((wx1,wy1), (wx2,wy1))),\
-                                     cast(front, sp, ((wx1,wy2), (wx2,wy2))),)
-        t = min(minhoriz, minvert)
-        user.xpos = oldpos[0] + t*sp[0]
-        user.ypos = oldpos[1] + t*sp[1]
-        if t == float('inf'):
-            print "WARN: NO INTERSECT FOUND FOR COLLISION"
-        if minhoriz < minvert:
-            sp[0] = 0
-        else:
-            if sp[1] > 0:
-                user.grounded = True
-            sp[1] = 0
+    coll_move(user, lvl_rects)
 
     # TODO: don't flip every frame
     screen.fill(bgcolor)
