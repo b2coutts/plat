@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 
+import math
+
 def vadd(a,b):
     '''Add two vectors a and b'''
     return [c+d for c,d in zip(a,b)]
@@ -8,6 +10,10 @@ def vsub(a,b):
     '''Subtract two vectors a and b'''
     return [c-d for c,d in zip(a,b)]
 
+def vscale(k,v):
+    '''Scale a vector v by scalar k'''
+    return [k*x for x in v]
+
 def vdot(a,b):
     '''Dot product'''
     return sum([c*d for c,d in zip(a,b)])
@@ -15,6 +21,10 @@ def vdot(a,b):
 def vperp2(v):
     '''Perpendicular vector to v; 2-dim only'''
     return [-v[1], v[0]]
+
+def vnorm(v):
+    '''2-norm'''
+    return math.sqrt(vdot(v,v))
 
 def amin(a,b):
     '''Produces whichever of a,b has lesser absolute value'''

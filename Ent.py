@@ -29,3 +29,6 @@ class Ent:
         print "pos: (%s,%s),  size: %sx%s,  speed: %s, grounded: %s" %\
               (self.xpos, self.ypos, self.width, self.height, self.speed,\
                self.grounded)
+
+    def centre(self):
+        return [self.xpos + 0.5*self.width, self.ypos + 0.5*self.height]

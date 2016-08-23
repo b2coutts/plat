@@ -21,6 +21,7 @@ while 1:
     print "speed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
     time.sleep(FRAME_LENGTH)
+    t0 = int(round(time.time() * 1000))
     pr = pygame.key.get_pressed()
 
     # check if user has fallen off platform
@@ -45,11 +46,14 @@ while 1:
                 FRAME_LENGTH /= 2.0
             elif event.unicode == '-':
                 FRAME_LENGTH *= 2.0
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
             mx, my = event.pos
             new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(), blockimg)
             level.append(new)
             lvl_rects.append(new.get_rect())
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            dirn = vsub(event.pos, user.centre())
+            user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
 
     sp = user.speed
     if user.grounded:
@@ -87,3 +91,5 @@ while 1:
     for item in level:
         item.blitto(screen)
     pygame.display.flip()
+    render_time = int(round(time.time() * 1000)) - t0
+    print "render time: %s" % render_time
