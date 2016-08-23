@@ -26,13 +26,10 @@ def absfloor(x):
 
 def rect_coll(r1,r2,epsilon):
     '''Determine if two rects (x,y,w,h) come witin epsilon of intersecting'''
-    #print "\t\tRC: args are %s and %s" % (r1,r2)
-    x = r1[0] <= r2[0] + r2[2] + epsilon and\
+    return r1[0] <= r2[0] + r2[2] + epsilon and\
            r1[1] <= r2[1] + r2[3] + epsilon and\
            r2[0] <= r1[0] + r1[2] + epsilon and\
            r2[1] <= r1[1] + r1[3] + epsilon
-    #print "\t\treturn: %s" % x
-    return x
 
 def cast(p, v, l):
     '''Given a starting point p, a direction v, and a line segment l (pair of

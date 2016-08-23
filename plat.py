@@ -13,6 +13,7 @@ bgcolor = 255, 255, 255
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
 userimg = pygame.image.load("img/guy.png")
+blockimg = pygame.image.load("img/block.png")
 user = Ent(100, 350, userimg.get_width(), userimg.get_height(), userimg)
 
 while 1:
@@ -31,6 +32,15 @@ while 1:
                 sp[1] = -JUMP_SPEED
                 user.grounded = False
 
+            # debug stuff
+            if event.key == pygame.K_p:
+                print "levels: %s" % lvl_rects
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mx, my = event.pos
+            new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(), blockimg)
+            level.append(new)
+            lvl_rects.append(new.get_rect())
+
     sp = user.speed
     if user.grounded:
         sp[0] = 0
@@ -42,7 +52,6 @@ while 1:
         # handle horizontal speed/acceleration
         sgn = sp[0] / abs(sp[0]) if sp[0] != 0 else 1
         if abs(sp[0]) > AIR_SPEED:
-            print "\tSPEED DRAG"
             sp[0] -= sgn * FRIC_DECEL
         
         if pr[keys.LEFT] and sp[0] >= -AIR_SPEED:
@@ -50,10 +59,8 @@ while 1:
         elif pr[keys.RIGHT] and sp[0] <= AIR_SPEED:
             sp[0] = min(AIR_SPEED, sp[0] + AIR_ACCEL)
         elif abs(sp[0]) < FRIC_DECEL:
-            print "\tDRAG STOP"
             sp[0] = 0
         else:
-            print "\tDRAG"
             sp[0] -= sgn*FRIC_DECEL
 
         # handle vertical speed/acceleration
@@ -90,7 +97,7 @@ while 1:
         user.xpos = oldpos[0] + t*sp[0]
         user.ypos = oldpos[1] + t*sp[1]
         if t == float('inf'):
-            sys.exit()
+            print "WARN: NO INTERSECT FOUND FOR COLLISION"
         if minhoriz < minvert:
             sp[0] = 0
         else:
@@ -101,4 +108,6 @@ while 1:
     # TODO: don't flip every frame
     screen.fill(bgcolor)
     user.blitto(screen)
+    for item in level:
+        item.blitto(screen)
     pygame.display.flip()
