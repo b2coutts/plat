@@ -51,17 +51,19 @@ while 1:
     else:
         # handle horizontal speed/acceleration
         sgn = sp[0] / abs(sp[0]) if sp[0] != 0 else 1
+        fdecel = FRIC_DECEL_SLOW if abs(sp[0] <= FRIC_DECEL_SLOW_THRES)\
+                                 else FRIC_DECEL
         if abs(sp[0]) > AIR_SPEED:
-            sp[0] -= sgn * FRIC_DECEL
+            sp[0] -= sgn * fdecel
         
         if pr[keys.LEFT] and sp[0] >= -AIR_SPEED:
             sp[0] = max(-AIR_SPEED, sp[0] - AIR_ACCEL)
         elif pr[keys.RIGHT] and sp[0] <= AIR_SPEED:
             sp[0] = min(AIR_SPEED, sp[0] + AIR_ACCEL)
-        elif abs(sp[0]) < FRIC_DECEL:
+        elif abs(sp[0]) < fdecel:
             sp[0] = 0
         else:
-            sp[0] -= sgn*FRIC_DECEL
+            sp[0] -= sgn*fdecel
 
         # handle vertical speed/acceleration
         # TODO: terminal velocity?
