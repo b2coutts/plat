@@ -15,5 +15,5 @@ JUMP_SPEED          = 10.0
 AIR_SPEED           = 2.0
 
 AIR_ACCEL           = 0.3
-FRIC_DECEL          = 0.25
+FRIC_DECEL          = 0.05
 GRAV_ACCEL          = 0.5

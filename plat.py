@@ -35,22 +35,25 @@ while 1:
     if user.grounded:
         sp[0] = 0
         if pr[keys.LEFT]:
-            sp[0] = -1
+            sp[0] = -RUN_SPEED
         elif pr[keys.RIGHT]:
-            sp[0] = 1
+            sp[0] = RUN_SPEED
     else:
         # handle horizontal speed/acceleration
         sgn = sp[0] / abs(sp[0]) if sp[0] != 0 else 1
         if abs(sp[0]) > AIR_SPEED:
+            print "\tSPEED DRAG"
             sp[0] -= sgn * FRIC_DECEL
         
-        if pr[keys.LEFT] and sp[0] > -AIR_SPEED:
+        if pr[keys.LEFT] and sp[0] >= -AIR_SPEED:
             sp[0] = max(-AIR_SPEED, sp[0] - AIR_ACCEL)
-        elif pr[keys.RIGHT] and sp[0] < AIR_SPEED:
+        elif pr[keys.RIGHT] and sp[0] <= AIR_SPEED:
             sp[0] = min(AIR_SPEED, sp[0] + AIR_ACCEL)
-        elif sp[0] < FRIC_DECEL:
+        elif abs(sp[0]) < FRIC_DECEL:
+            print "\tDRAG STOP"
             sp[0] = 0
         else:
+            print "\tDRAG"
             sp[0] -= sgn*FRIC_DECEL
 
         # handle vertical speed/acceleration
@@ -61,8 +64,6 @@ while 1:
     oldpos = oldx, oldy = user.xpos, user.ypos
     user.xpos += sp[0]
     user.ypos += sp[1]
-
-    print "\tnew ypos is %s" % user.ypos
 
     if sp[0] <= 0 and sp[1] >= 0:
         front = oldx, oldy + user.height
@@ -77,7 +78,6 @@ while 1:
     collisions = [r for r in lvl_rects\
                     if rect_coll(user.get_rect(), r, COLL_DIST)]
     if collisions:
-        print "\tcollisions: %s; front is %s" % (collisions, front)
         minhoriz, minvert = float('inf'), float('inf')
         for rect in collisions:
             wx1, wx2, wy1, wy2 = rect[0]-COLL_SEP, rect[0]+rect[1]+COLL_SEP,\
@@ -87,23 +87,16 @@ while 1:
             minvert  = min(minvert,  cast(front, sp, ((wx1,wy1), (wx2,wy1))),\
                                      cast(front, sp, ((wx1,wy2), (wx2,wy2))),)
         t = min(minhoriz, minvert)
-        print "\tt is %s" % t
         user.xpos = oldpos[0] + t*sp[0]
         user.ypos = oldpos[1] + t*sp[1]
-        print "\tmh, mv are %s,%s" % (minhoriz, minvert)
         if t == float('inf'):
-            print "\tPANIC: collision, but no intersection found!"
             sys.exit()
-        print "??????"
         if minhoriz < minvert:
-            print "####ASDF####"
             sp[0] = 0
         else:
             if sp[1] > 0:
-                print "@@@@GROUNDING@@@@"
                 user.grounded = True
             sp[1] = 0
-        print "!!!!!"
 
     # TODO: don't flip every frame
     screen.fill(bgcolor)
