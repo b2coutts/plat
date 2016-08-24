@@ -3,11 +3,8 @@
 from Ent import *
 import params
 
-bwidth = 20
-w,h = params.SCREEN_SIZE
-
-blockimg = pygame.image.load("img/block.png")
-kbimg    = pygame.image.load("img/kb.png")
+blockimg = pygame.image.load("img/block.png").convert()
+kbimg    = pygame.image.load("img/kb.png").convert()
 
 def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
     right = w*img.get_width()
@@ -24,8 +21,8 @@ def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
             y += img.get_height()
         y = 0
         x += img.get_width()
-    return Ent(xp, yp, w*img.get_width(), h*img.get_height(), platimg, spd[:],\
-               beh=beh, deadly=deadly)
+    return Ent(xp, yp, w*img.get_width(), h*img.get_height(),\
+               platimg.convert(), spd[:], beh=beh, deadly=deadly)
 
 # platform whose pos oscillates between a and b, with speed magnitude s
 def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
@@ -45,6 +42,9 @@ def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
     plat.atob = True
     return plat
 
+bwidth = 20
+w,h = params.SCREEN_SIZE
+
 border  = [Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth),\
            Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth),\
            Ent(w, -bwidth, bwidth, h + 2*bwidth),\
@@ -54,7 +54,8 @@ vborder = [mkplat(0, 0, 40, 1), mkplat(0, 0, 1, 30), mkplat(0, 580, 40, 1),\
 lavapit = [mkplat(170, 420, 1, 8), mkplat(290, 420, 1, 8), mkplat(170, 560, 7, 1),\
            mkplat(190, 480, 5, 4, img=kbimg, deadly=True)]
 elev    = [mkosc((90,560), (90,420), 4, 1, 1.5)]
+laggers = [mkosc((90,20+30*x), (490,20+30*x), 4, 1, x/2.0) for x in range(20)]
 
 
 # TODO: this should probably just be a class or something
-level = border + vborder + lavapit + elev
+level = border + vborder + lavapit + elev + laggers

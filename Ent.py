@@ -17,6 +17,8 @@ class Ent:
                        deadly=False):
         self.xpos = x
         self.ypos = y
+        self.oldx = round(x)
+        self.oldy = round(y)
         self.width = w
         self.height = h
         self.sprite = s
@@ -31,9 +33,24 @@ class Ent:
                (self.xpos, self.ypos, self.width, self.height, self.speed,\
                 self.grounded)
 
-    def blitto(self, screen):
+    # TODO: maybe more reliable to keep track of last pos?
+    def unblit(self, screen, dirty_rects):
+        '''unblit self (in position from last frame), append to dirty_rects'''
+        if self.sprite:
+            unimg = pygame.Surface((self.width, self.height))
+            unimg.fill((255,255,255))
+            screen.blit(unimg, (self.oldx,self.oldy))
+            dirty_rects.append((self.oldx, self.oldy, self.oldx+self.width,\
+                                self.oldy+self.height))
+
+    def blitto(self, screen, dirty_rects):
+        '''blit self to screen; append dirty rects to dirty_rects'''
         if self.sprite:
             screen.blit(self.sprite, (round(self.xpos), round(self.ypos)))
+            self.oldx = round(self.xpos)
+            self.oldy = round(self.ypos)
+            dirty_rects.append((self.oldx, self.oldy, self.oldx+self.width,\
+                                self.oldy+self.height))
 
     def get_rect(self):
         return self.xpos, self.ypos, self.width, self.height

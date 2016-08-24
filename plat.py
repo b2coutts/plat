@@ -1,20 +1,21 @@
 #!/usr/bin/env python2
 
 import sys, pygame, time
+from params import *
+
+pygame.init()
+screen = pygame.display.set_mode(SCREEN_SIZE)
+
 import keys
 from level import level
 from Ent import *
-from params import *
 from util import *
 from collision import coll_move
-pygame.init()
 
 bgcolor = 255, 255, 255
 
-screen = pygame.display.set_mode(SCREEN_SIZE)
-
-userimg = pygame.image.load("img/guy.png")
-blockimg = pygame.image.load("img/block.png")
+userimg = pygame.image.load("img/guy.png").convert()
+blockimg = pygame.image.load("img/block.png").convert()
 user = Ent(SPAWN[0], SPAWN[1], userimg.get_width(), userimg.get_height(), userimg)
 
 # TODO: numerically bad
@@ -24,6 +25,7 @@ def can_ground(usr, obst):
            usr.bottom() == obst.top()
 
 frame = -1 # frame counter
+avg_render_time = 0
 while 1:
     frame += 1
     time.sleep(FRAME_LENGTH)
@@ -44,6 +46,7 @@ while 1:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            print 'avg frame rate: %s' % avg_render_time
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == keys.JUMP and user.grounded:
@@ -105,9 +108,15 @@ while 1:
     coll_move(user, level)
 
     # TODO: don't flip every frame
-    screen.fill(bgcolor)
+    #screen.fill(bgcolor)
+    dirty_rects = []
     for thing in [user] + level:
-        thing.blitto(screen)
+        thing.unblit(screen, dirty_rects)
+    for thing in [user] + level:
+        thing.blitto(screen, dirty_rects)
+    #pygame.display.update(dirty_rects)
     pygame.display.flip()
     render_time = int(round(time.time() * 1000)) - t0
     print "render time: %s" % render_time
+    avg_render_time -= avg_render_time/(frame+1)
+    avg_render_time += render_time/(frame+1)
