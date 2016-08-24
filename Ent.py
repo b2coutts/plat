@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import pygame
+from util import *
 
 class Ent:
     #xpos, ypos  # top-left corner position; floats, round to pixels
@@ -27,6 +28,7 @@ class Ent:
 
     def blitto(self, screen):
         if self.sprite:
+            print "%s,  %s" % (round(self.xpos), round(self.ypos))
             screen.blit(self.sprite, (round(self.xpos), round(self.ypos)))
 
     def get_rect(self):
@@ -46,3 +48,7 @@ class Ent:
 
     def bottom(self):
         return self.ypos + self.height
+
+    def pspeed(self):
+        '''User speed after factoring in platform speed (if any)'''
+        return vadd(self.speed, self.grounded.speed if self.grounded else [0,0])
