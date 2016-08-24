@@ -35,10 +35,12 @@ border  = [Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth),\
            Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth),\
            Ent(w, -bwidth, bwidth, h + 2*bwidth),\
            Ent(-bwidth, h, w + 2*bwidth, bwidth)]
-lavapit = [mkplat(250, 240, 1, 8), mkplat(370, 240, 1, 8), mkplat(250, 380, 7, 1),\
-           mkplat(270, 300, 5, 4, img=kbimg, deadly=True)]
-elev    = [mkosc((170,380), (170,240), 4, 1, 1.5)]
+vborder = [mkplat(0, 0, 40, 1), mkplat(0, 0, 1, 30), mkplat(0, 580, 40, 1),\
+           mkplat(780, 0, 1, 30)]
+lavapit = [mkplat(170, 420, 1, 8), mkplat(290, 420, 1, 8), mkplat(170, 560, 7, 1),\
+           mkplat(190, 480, 5, 4, img=kbimg, deadly=True)]
+elev    = [mkosc((90,560), (90,420), 4, 1, 1.5)]
 
 
 # TODO: this should probably just be a class or something
-level = border + lavapit + elev
+level = border + vborder + lavapit + elev

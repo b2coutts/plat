@@ -1,9 +1,9 @@
 #!/usr/bin/env python2
 
 # temporary
-SPAWN                   = 60, 250
+SPAWN                   = 20, 560
 
-SCREEN_SIZE             = 600, 400
+SCREEN_SIZE             = 800, 600
 #SCREEN_SIZE             = 1280, 800
 
 # amount of distance maintained between user and obstacles

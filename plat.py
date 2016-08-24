@@ -111,4 +111,4 @@ while 1:
         item.blitto(screen)
     pygame.display.flip()
     render_time = int(round(time.time() * 1000)) - t0
-    #print "render time: %s" % render_time
+    print "render time: %s" % render_time
