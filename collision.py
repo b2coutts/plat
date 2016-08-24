@@ -1,11 +1,13 @@
 #!/usr/bin/env python2
 
+from util import *
+
 inf = float('inf')
 
 def coll_move(ent, obsts, tstep=1.0):
     '''Move ent 1 for time t according to its speed/position, respecting
        collisions with the Ents in the list obsts'''
-    print "coll_move t=%s, speed=%s" % (tstep, ent.speed)
+    #print "coll_move t=%s, speed=%s" % (tstep, ent.speed)
     # detect collisions
     rec_t = tstep # time of the soonest collision
     rec_type = '-' # 'u' for up face, 'd' for down, 'l' left, 'r' right
@@ -13,7 +15,7 @@ def coll_move(ent, obsts, tstep=1.0):
     for obst in obsts:
         # iterate over corners of ent
         # TODO: more accurate collision detection would use a more complex polygon
-        sp = ent.speed
+        sp = vsub(ent.speed, obst.speed)
         for p1,p2 in [(ent.xpos, ent.ypos),\
                       (ent.xpos, ent.ypos+ent.height),\
                       (ent.xpos+ent.width, ent.ypos),\
@@ -54,16 +56,16 @@ def coll_move(ent, obsts, tstep=1.0):
                 rec_obst = obst
 
     # resolve collision detection; move to collision then slide along surface
-    ent.xpos += sp[0] * rec_t
-    ent.ypos += sp[1] * rec_t
+    ent.xpos += ent.speed[0] * rec_t
+    ent.ypos += ent.speed[1] * rec_t
     if rec_type in 'lr':
-        sp[0] = 0
+        ent.speed[0] = 0
     elif rec_type in 'ud':
-        sp[1] = 0
+        ent.speed[1] = 0
         if rec_type == 'u':
             ent.grounded = rec_obst
 
-    print "end: rec_t=%s, rec_type=%s" % (rec_t, rec_type)
+    #print "end: rec_t=%s, rec_type=%s" % (rec_t, rec_type)
 
     if rec_type != '-':
         coll_move(ent, obsts, tstep-rec_t)

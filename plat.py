@@ -20,8 +20,6 @@ user = Ent(100, 350, userimg.get_width(), userimg.get_height(), userimg)
 frame = -1 # frame counter
 while 1:
     frame += 1
-    print "speed: %s,  posn: (%s,%s), grounded: %s" %\
-        (user.speed, user.xpos, user.ypos, user.grounded)
     time.sleep(FRAME_LENGTH)
     t0 = int(round(time.time() * 1000))
     pr = pygame.key.get_pressed()
@@ -55,16 +53,12 @@ while 1:
 
     sp = user.speed
     if user.grounded:
-        sys.stdout.write('IDs: %s,%s.   speed:  %s' %\
-            (hex(id(user.speed)), hex(id(user.grounded.speed)), user.grounded.speed))
         sp[0] = user.grounded.speed[0]+0
         sp[1] = user.grounded.speed[1]+0
-        sys.stdout.write(' -> %s' % user.grounded.speed)
         if pr[keys.LEFT]:
             sp[0] -= RUN_SPEED
         elif pr[keys.RIGHT]:
             sp[0] += RUN_SPEED
-        sys.stdout.write(' -> %s\n' % user.grounded.speed)
     else:
         # handle horizontal speed/acceleration
         sgn = sp[0] / abs(sp[0]) if sp[0] != 0 else 1
@@ -86,6 +80,8 @@ while 1:
         # TODO: terminal velocity?
         sp[1] += GRAV_ACCEL
 
+    print "speed: %s,  posn: (%s,%s), grounded: %s" %\
+        (user.speed, user.xpos, user.ypos, user.grounded)
     coll_move(user, level)
 
     # TODO: don't flip every frame
