@@ -33,20 +33,7 @@ class Ent:
 
     def blitto(self, screen):
         if self.sprite:
-            x0 = x = round(self.xpos)
-            y0 = y = round(self.ypos)
-            right = round(x + self.width)
-            bot = round(y + self.height)
-            while x < right:
-                if x > right - self.sprite.get_width():
-                    x = right - self.sprite.get_width()
-                while y < bot:
-                    if y > bot - self.sprite.get_height():
-                        y = bot - self.sprite.get_height()
-                    screen.blit(self.sprite, (x,y))
-                    y += self.sprite.get_height()
-                y = y0
-                x += self.sprite.get_width()
+            screen.blit(self.sprite, (round(self.xpos), round(self.ypos)))
 
     def get_rect(self):
         return self.xpos, self.ypos, self.width, self.height

@@ -9,8 +9,22 @@ w,h = params.SCREEN_SIZE
 blockimg = pygame.image.load("img/block.png")
 kbimg    = pygame.image.load("img/kb.png")
 
-def mkplat(x, y, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
-    return Ent(x, y, w*img.get_width(), h*img.get_height(), img, spd[:],\
+def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
+    right = w*img.get_width()
+    bottom = h*img.get_height()
+    platimg = pygame.Surface((right, bottom))
+    x = y = 0
+    while x < right:
+        if x > right - img.get_width():
+            x = right - img.get_width()
+        while y < bottom:
+            if y > bottom - img.get_height():
+                y = bottom - img.get_height()
+            platimg.blit(img, (x,y))
+            y += img.get_height()
+        y = 0
+        x += img.get_width()
+    return Ent(xp, yp, w*img.get_width(), h*img.get_height(), platimg, spd[:],\
                beh=beh, deadly=deadly)
 
 # platform whose pos oscillates between a and b, with speed magnitude s

@@ -106,9 +106,8 @@ while 1:
 
     # TODO: don't flip every frame
     screen.fill(bgcolor)
-    user.blitto(screen)
-    for item in level:
-        item.blitto(screen)
+    for thing in [user] + level:
+        thing.blitto(screen)
     pygame.display.flip()
     render_time = int(round(time.time() * 1000)) - t0
     print "render time: %s" % render_time
