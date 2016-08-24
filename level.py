@@ -14,6 +14,7 @@ def mover_beh(plat, frame):
 
 def elev_beh(plat, frame):
     if (frame+1)%(60*4) == 0:
+        plat.speed[0] *= -1
         plat.speed[1] *= -1
 
 b_top   = Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth)
@@ -24,7 +25,7 @@ plat1   = Ent(200, 320, 20, 20, blockimg)
 plat2   = Ent(220, 320, 20, 20, blockimg)
 movers  = [Ent(200+x, 300, 20, 20, blockimg, [1,0], beh=mover_beh)\
            for x in [0,20,40,60,80] ]
-elevator = [Ent(50+x, 350, 20, 20, blockimg, [0,-1], beh=elev_beh)\
+elevator = [Ent(50+x, 350, 20, 20, blockimg, [1,-1], beh=elev_beh)\
             for x in [0,20,40,60,80]]
 
 # TODO: this should probably just be a class or something
