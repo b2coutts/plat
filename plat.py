@@ -87,7 +87,7 @@ while 1:
     
     print "\nspeed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    print "plat: %s" % level[1]
+    print "plat: %s" % level[-5]
     coll_move(user, level)
 
     # TODO: don't flip every frame
