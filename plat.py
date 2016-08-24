@@ -38,6 +38,11 @@ while 1:
                 user.grounded = obst
                 break
 
+    # update platform speeds
+    for item in level:
+        if item.behaviour:
+            item.behaviour(item, frame)
+
     jumping = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -88,11 +93,6 @@ while 1:
         # handle vertical speed/acceleration
         # TODO: terminal velocity?
         sp[1] += GRAV_ACCEL
-
-    # update platform speeds
-    for item in level:
-        if item.behaviour:
-            item.behaviour(item, frame)
     
     print "\nspeed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
