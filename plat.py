@@ -17,6 +17,12 @@ userimg = pygame.image.load("img/guy.png")
 blockimg = pygame.image.load("img/block.png")
 user = Ent(SPAWN[0], SPAWN[1], userimg.get_width(), userimg.get_height(), userimg)
 
+# TODO: numerically bad
+def can_ground(usr, obst):
+    return usr.right() >= obst.left() and\
+           usr.left() <= obst.right() and\
+           usr.bottom() == obst.top()
+
 frame = -1 # frame counter
 while 1:
     frame += 1
@@ -25,9 +31,12 @@ while 1:
     pr = pygame.key.get_pressed()
 
     # check if user has fallen off platform
-    if user.grounded and (user.right() < user.grounded.left() or\
-                          user.left() > user.grounded.right()):
+    if user.grounded and not can_ground(user, user.grounded):
         user.grounded = False
+        for obst in level:
+            if can_ground(user, obst):
+                user.grounded = obst
+                break
 
     jumping = False
     for event in pygame.event.get():
