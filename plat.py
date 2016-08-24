@@ -15,7 +15,7 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 
 userimg = pygame.image.load("img/guy.png")
 blockimg = pygame.image.load("img/block.png")
-user = Ent(60, 250, userimg.get_width(), userimg.get_height(), userimg)
+user = Ent(SPAWN[0], SPAWN[1], userimg.get_width(), userimg.get_height(), userimg)
 
 frame = -1 # frame counter
 while 1:
@@ -28,14 +28,6 @@ while 1:
     if user.grounded and (user.right() < user.grounded.left() or\
                           user.left() > user.grounded.right()):
         user.grounded = False
-
-    # move platforms (and user if on a platform)
-    for item in level:
-        if item.behaviour:
-            item.behaviour(item, frame)
-    if user.grounded:
-        user.xpos += user.grounded.speed[0]
-        user.ypos += user.grounded.speed[1]
 
     jumping = False
     for event in pygame.event.get():
@@ -61,7 +53,8 @@ while 1:
 
     sp = user.speed
     if user.grounded:
-        sp[0] = sp[1] = 0.0
+        sp[0] = user.grounded.speed[0]
+        sp[1] = user.grounded.speed[1]
         if pr[keys.LEFT]:
             sp[0] -= RUN_SPEED
         elif pr[keys.RIGHT]:
@@ -87,10 +80,14 @@ while 1:
         # TODO: terminal velocity?
         sp[1] += GRAV_ACCEL
 
+    # update platform speeds
+    for item in level:
+        if item.behaviour:
+            item.behaviour(item, frame)
     
     print "\nspeed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    print "plat: %s" % level[-1]
+    print "plat: %s" % level[1]
     coll_move(user, level)
 
     # TODO: don't flip every frame

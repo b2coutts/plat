@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import pygame
+from params import *
 from util import *
 
 class Ent:
@@ -28,7 +29,6 @@ class Ent:
 
     def blitto(self, screen):
         if self.sprite:
-            print "%s,  %s" % (round(self.xpos), round(self.ypos))
             screen.blit(self.sprite, (round(self.xpos), round(self.ypos)))
 
     def get_rect(self):
@@ -52,3 +52,9 @@ class Ent:
     def pspeed(self):
         '''User speed after factoring in platform speed (if any)'''
         return vadd(self.speed, self.grounded.speed if self.grounded else [0,0])
+
+
+    def kill(self):
+        self.xpos, self.ypos = SPAWN
+        self.speed = [0,0]
+        self.grounded = False

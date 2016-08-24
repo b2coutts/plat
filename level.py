@@ -12,15 +12,9 @@ def mover_beh(plat, frame):
     if (frame+1)%(60*5) == 0:
         plat.speed[0] *= -1
 
-    plat.xpos += plat.speed[0]
-    plat.ypos += plat.speed[1]
-
 def elev_beh(plat, frame):
-    if (frame+1)%(60*15) == 0:
+    if (frame+1)%(60*7) == 0:
         plat.speed[1] *= -1
-
-    plat.xpos += plat.speed[0]
-    plat.ypos += plat.speed[1]
 
 b_top   = Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth)
 b_left  = Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth)
