@@ -7,23 +7,38 @@ bwidth = 20
 w,h = params.SCREEN_SIZE
 
 blockimg = pygame.image.load("img/block.png")
+kbimg    = pygame.image.load("img/kb.png")
 
-def mover_beh(plat, frame):
-    if (frame+1)%(60*5) == 0:
-        plat.speed[0] *= -1
+def mkplat(x, y, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
+    return Ent(x, y, w*img.get_width(), h*img.get_height(), img, spd[:],\
+               beh=beh, deadly=deadly)
 
-def elev_beh(plat, frame):
-    if (frame+1)%(60*4) == 0:
-        plat.speed[0] *= -1
-        plat.speed[1] *= -1
+# platform whose pos oscillates between a and b, with speed magnitude s
+def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
+    def beh(plat, frame):
+        print "beh: init %s" % plat
+        # reverse direction if necessary
+        if plat.atob:
+            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], b)) > 0:
+                plat.atob = False
+        else:
+            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], a)) < 0:
+                plat.atob = True
 
-b_top   = Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth)
-b_left  = Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth)
-b_right = Ent(w, -bwidth, bwidth, h + 2*bwidth)
-b_bot   = Ent(-bwidth, h, w + 2*bwidth, bwidth)
-plat   = Ent(200, 320, 40, 20, blockimg)
-mover   = Ent(200, 300, 110, 20, blockimg, [1,0], beh=mover_beh)
-elevator = Ent(50, 350, 100, 20, blockimg, [1,-1], beh=elev_beh)
+        dirn = vsub(b,a) if plat.atob else vsub(a,b)
+        plat.speed = vscale(s/vnorm(dirn), dirn)
+    plat = mkplat(a[0], a[1], w, h, img=img, beh=beh, deadly=deadly)
+    plat.atob = True
+    return plat
+
+border  = [Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth),\
+           Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth),\
+           Ent(w, -bwidth, bwidth, h + 2*bwidth),\
+           Ent(-bwidth, h, w + 2*bwidth, bwidth)]
+lavapit = [mkplat(250, 240, 1, 8), mkplat(370, 240, 1, 8), mkplat(250, 380, 7, 1),\
+           mkplat(270, 300, 5, 4, img=kbimg, deadly=True)]
+elev    = [mkosc((170,380), (170,240), 4, 1, 1.5)]
+
 
 # TODO: this should probably just be a class or something
-level = [b_top, b_left, b_right, b_bot, plat, mover, elevator]
+level = border + lavapit + elev

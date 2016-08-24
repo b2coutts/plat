@@ -11,8 +11,10 @@ class Ent:
     #speed
     #grounded
     #behaviour
+    #deadly
 
-    def __init__(self, x, y, w, h, s=False, spd=[0,0], grd=False, beh=False):
+    def __init__(self, x, y, w, h, s=False, spd=[0,0], grd=False, beh=False,\
+                       deadly=False):
         self.xpos = x
         self.ypos = y
         self.width = w
@@ -22,6 +24,7 @@ class Ent:
         self.grounded = grd
         self.behaviour = beh
         self.jumping = False
+        self.deadly = deadly
 
     def __str__(self):
         return "Ent:  pos=(%s,%s),  size=%sx%s,  speed=%s, grounded=%s" %\

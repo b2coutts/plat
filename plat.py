@@ -91,7 +91,6 @@ while 1:
         # handle vertical speed/acceleration
         # TODO: terminal velocity?
         if user.jumping and user.jumping <= JUMP_ACCEL_LEN and pr[keys.JUMP]:
-            print 'foobar'
             sp[1] -= JUMP_ACCEL
             user.jumping += 1
         else:
@@ -103,7 +102,6 @@ while 1:
     
     print "\nspeed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    print "plat: %s" % level[-5]
     coll_move(user, level)
 
     # TODO: don't flip every frame

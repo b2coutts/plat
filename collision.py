@@ -77,7 +77,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
 
     print "\tend: rec_t=%s, rec_type=%s, ent=%s" % (rec_t, rec_type, ent)
 
-    if rec_t == 0.0 and zeros >= 2:
+    if (rec_t == 0.0 and zeros >= 2) or (rec_obst and rec_obst.deadly):
         print "User died!"
         ent.kill()
         for obst in obsts:
