@@ -11,7 +11,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
     '''Move ent 1 for time t according to its speed/position, respecting
        collisions with the Ents in the list obsts. Also advances obsts
        forward'''
-    print "\tcoll_move t=%s, ent=%s" % (tstep, ent)
+    #print "\tcoll_move t=%s, ent=%s" % (tstep, ent)
 
     # detect collisions
     rec_t = tstep # time of the soonest collision
@@ -75,7 +75,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
         if rec_type == 'u':
             ent.grounded = rec_obst
 
-    print "\tend: rec_t=%s, rec_type=%s, ent=%s" % (rec_t, rec_type, ent)
+    #print "\tend: rec_t=%s, rec_type=%s, ent=%s" % (rec_t, rec_type, ent)
 
     if (rec_t == 0.0 and zeros >= 2) or (rec_obst and rec_obst.deadly):
         print "User died!"

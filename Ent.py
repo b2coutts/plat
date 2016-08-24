@@ -17,8 +17,8 @@ class Ent:
                        deadly=False):
         self.xpos = x
         self.ypos = y
-        self.oldx = round(x)
-        self.oldy = round(y)
+        self.oldx = None
+        self.oldy = None
         self.width = w
         self.height = h
         self.sprite = s
@@ -33,27 +33,39 @@ class Ent:
                (self.xpos, self.ypos, self.width, self.height, self.speed,\
                 self.grounded)
 
-    # TODO: maybe more reliable to keep track of last pos?
-    def unblit(self, screen, dirty_rects):
+    def unblit(self, screen, unblitted_rects):
         '''unblit self (in position from last frame), append to dirty_rects'''
-        if self.sprite:
-            unimg = pygame.Surface((self.width, self.height))
-            unimg.fill((255,255,255))
-            screen.blit(unimg, (self.oldx,self.oldy))
-            dirty_rects.append((self.oldx, self.oldy, self.oldx+self.width,\
-                                self.oldy+self.height))
 
-    def blitto(self, screen, dirty_rects):
+        if self.sprite and self.oldx != None and\
+           (self.oldx,self.oldy) != (round(self.xpos),round(self.ypos)):
+            unimg = pygame.Surface((self.width, self.height))
+            unimg.fill((0,0,0))
+            screen.blit(unimg, (self.oldx,self.oldy))
+            unblitted_rects.append((self.oldx, self.oldy, self.oldx+self.width,\
+                                    self.oldy+self.height))
+
+    def blitto(self, screen, unblitted_rects, dirty_rects):
         '''blit self to screen; append dirty rects to dirty_rects'''
-        if self.sprite:
-            screen.blit(self.sprite, (round(self.xpos), round(self.ypos)))
-            self.oldx = round(self.xpos)
-            self.oldy = round(self.ypos)
-            dirty_rects.append((self.oldx, self.oldy, self.oldx+self.width,\
-                                self.oldy+self.height))
+        curx = round(self.xpos)
+        cury = round(self.ypos)
+        if self.sprite and ((self.oldx,self.oldy) != (curx,cury) or\
+                            self.get_rect().collidelist(unblitted_rects) != -1):
+            if self.oldx == None:
+                self.oldx = curx
+                self.oldy = cury
+            drx1 = min(curx, self.oldx)
+            drx2 = max(curx, self.oldx) + self.width
+            dry1 = min(cury, self.oldy)
+            dry2 = max(cury, self.oldy) + self.height
+            dirty_rects.append((drx1, dry1, drx2-drx1, dry2-dry1))
+            screen.blit(self.sprite, (curx, cury))
+            self.oldx = curx
+            self.oldy = cury
 
     def get_rect(self):
-        return self.xpos, self.ypos, self.width, self.height
+        '''Gets the DRAW rect for self (rounded, not actual coords)'''
+        return pygame.Rect(round(self.xpos)-1, round(self.ypos)-1, self.width,\
+                           self.height)
 
     def centre(self):
         return [self.xpos + 0.5*self.width, self.ypos + 0.5*self.height]

@@ -27,7 +27,6 @@ def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
 # platform whose pos oscillates between a and b, with speed magnitude s
 def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
     def beh(plat, frame):
-        print "beh: init %s" % plat
         # reverse direction if necessary
         if plat.atob:
             if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], b)) > 0:
