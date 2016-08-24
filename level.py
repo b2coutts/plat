@@ -21,12 +21,9 @@ b_top   = Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth)
 b_left  = Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth)
 b_right = Ent(w, -bwidth, bwidth, h + 2*bwidth)
 b_bot   = Ent(-bwidth, h, w + 2*bwidth, bwidth)
-plat1   = Ent(200, 320, 20, 20, blockimg)
-plat2   = Ent(220, 320, 20, 20, blockimg)
-movers  = [Ent(200+x, 300, 20, 20, blockimg, [1,0], beh=mover_beh)\
-           for x in [0,20,40,60,80] ]
-elevator = [Ent(50+x, 350, 20, 20, blockimg, [1,-1], beh=elev_beh)\
-            for x in [0,20,40,60,80]]
+plat   = Ent(200, 320, 40, 20, blockimg)
+mover   = Ent(200, 300, 110, 20, blockimg, [1,0], beh=mover_beh)
+elevator = Ent(50, 350, 100, 20, blockimg, [1,-1], beh=elev_beh)
 
 # TODO: this should probably just be a class or something
-level = [b_top, b_left, b_right, b_bot, plat1, plat2] + movers + elevator
+level = [b_top, b_left, b_right, b_bot, plat, mover, elevator]

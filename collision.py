@@ -43,10 +43,6 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
             lb_vert = (b2-c2)/sp[1]
             ub_vert = (a2-d2)/sp[1]
 
-        if a1 == 50.0:
-            print "\tlbh,lbv,ubh,ubv are %s, %s, %s, %s" %\
-                  (lb_hori, lb_vert, ub_hori, ub_vert)
-
         t0 = max(lb_hori,lb_vert)
         # TODO: problem is that COLL_BUFFER as used here will be a buffer of
         # time, not space. Will be impossible to have a collision buffer if,
