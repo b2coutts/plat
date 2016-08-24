@@ -21,6 +21,7 @@ class Ent:
         self.speed = spd[:]
         self.grounded = grd
         self.behaviour = beh
+        self.jumping = False
 
     def __str__(self):
         return "Ent:  pos=(%s,%s),  size=%sx%s,  speed=%s, grounded=%s" %\

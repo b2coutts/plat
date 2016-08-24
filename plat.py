@@ -28,7 +28,6 @@ while 1:
     frame += 1
     time.sleep(FRAME_LENGTH)
     t0 = int(round(time.time() * 1000))
-    pr = pygame.key.get_pressed()
 
     # check if user has fallen off platform
     if user.grounded and not can_ground(user, user.grounded):
@@ -43,15 +42,13 @@ while 1:
         if item.behaviour:
             item.behaviour(item, frame)
 
-    jumping = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == keys.JUMP and user.grounded:
-                jumping = True
-                sp[1] = -JUMP_SPEED
                 user.grounded = False
+                user.jumping = 1
 
             if event.unicode == '+':
                 FRAME_LENGTH /= 2.0
@@ -65,6 +62,7 @@ while 1:
             dirn = vsub(event.pos, user.centre())
             user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
 
+    pr = pygame.key.get_pressed()
     sp = user.speed
     if user.grounded:
         sp[0] = user.grounded.speed[0]
@@ -92,7 +90,13 @@ while 1:
 
         # handle vertical speed/acceleration
         # TODO: terminal velocity?
-        sp[1] += GRAV_ACCEL
+        if user.jumping and user.jumping <= JUMP_ACCEL_LEN and pr[keys.JUMP]:
+            print 'foobar'
+            sp[1] -= JUMP_ACCEL
+            user.jumping += 1
+        else:
+            sp[1] += GRAV_ACCEL
+            user.jumping = False
     
     print "\nspeed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)

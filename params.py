@@ -13,7 +13,8 @@ FRAME_LENGTH            = 0.0167
 #FRAME_LENGTH           = 0.167
 RUN_SPEED               = 3.5
 AIR_SPEED               = 3.5
-JUMP_SPEED              = 10.0
+JUMP_ACCEL              = 1.4
+JUMP_ACCEL_LEN          = 6
 
 AIR_ACCEL               = 0.3
 FRIC_DECEL              = 0.1
