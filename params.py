@@ -25,3 +25,6 @@ GRAV_ACCEL_RAT_MIN      = 0.5
 GRAV_ACCEL_RAT_COEF     = (GRAV_ACCEL_RAT_MIN-1) / (JUMP_ACCEL*JUMP_ACCEL_LEN)
 
 BOOST_SPEED             = 8.0
+
+# common buffer to consider 2 floats 'equal'
+EPSILON                 = 0.001

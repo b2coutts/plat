@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import math
+from params import *
 
 def vadd(a,b):
     '''Add two vectors a and b'''
@@ -51,3 +52,6 @@ def cast(p, v, l):
         return float('inf')
     t = (alpha - vdot(d,p)) / vdot(d,v)
     return t if t>=0 else float('inf')
+
+def float_eq(a,b):
+    return abs(a-b) < EPSILON

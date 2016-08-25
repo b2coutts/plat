@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 
+import math
+
 from Ent import *
 import params
 
@@ -44,6 +46,10 @@ def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
 bwidth = 20
 w,h = params.SCREEN_SIZE
 
+def circle_beh(plat,frame):
+    t = frame * (2*math.pi)/(60*10.0)
+    plat.speed = [math.cos(t), math.sin(t)]
+
 border  = [Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth),\
            Ent(-bwidth, -bwidth, bwidth, h + 2*bwidth),\
            Ent(w, -bwidth, bwidth, h + 2*bwidth),\
@@ -54,7 +60,10 @@ lavapit = [mkplat(170, 420, 1, 8), mkplat(290, 420, 1, 8), mkplat(170, 560, 7, 1
            mkplat(190, 480, 5, 4, img=kbimg, deadly=True)]
 elev    = [mkosc((90,560), (90,420), 4, 1, 1.5)]
 laggers = [mkosc((90,20+30*x), (490,20+30*x), 4, 1, x/2.0) for x in range(20)]
+circle  = [mkplat(500, 200, 5, 1, beh=circle_beh)]
+weird   = [mkosc((90,560), (230.023, 420.432), 4, 1, 1.5)]
 
 
 # TODO: this should probably just be a class or something
-level = border + vborder + lavapit + elev #+ laggers
+#level = border + vborder + lavapit + elev + circle
+level = border + vborder + weird + circle
