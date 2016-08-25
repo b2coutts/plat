@@ -125,7 +125,7 @@ while 1:
     after_render = time.time()
     frame_time = after_render - t0
     render_time = time.time() - b4render
-    print "render/frame: %sms,  %sms" % (render_time*1000, frame_time*1000)
+    #print "render/frame: %sms,  %sms" % (render_time*1000, frame_time*1000)
     avg_render_time -= avg_render_time/(frame+1)
     avg_render_time += render_time/(frame+1)
     avg_frame_time  -= avg_frame_time/(frame+1)

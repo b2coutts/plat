@@ -58,9 +58,11 @@ vborder = [mkplat(0, 0, 40, 1), mkplat(0, 0, 1, 30), mkplat(0, 580, 40, 1),\
            mkplat(780, 0, 1, 30)]
 lavapit = [mkplat(170, 400, 1, 8), mkplat(290, 400, 1, 8), mkplat(170, 540, 7, 1),\
            mkplat(190, 460, 5, 4, img=kbimg, deadly=True)]
-#elev    = [mkosc((90,540), (90,400), 4, 1, 1.5)]
-elev    = [mkosc((90,540), (90,520), 4, 1, 1.5)]
+elev1   = [mkosc((90,540), (90,400), 4, 1, 1.5)]
+floor2  = [mkplat(0, 260, 36, 1)]
+mover1  = [mkosc((350,450), (570,450), 3, 1, 2)]
+elev2   = [mkosc((720,450), (720, 260), 3, 1, 1)]
 
 
 # TODO: this should probably just be a class or something
-level = border + vborder + lavapit + elev
+level = border + vborder + lavapit + elev1 + floor2 + mover1 + elev2
