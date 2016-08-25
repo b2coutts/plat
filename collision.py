@@ -11,7 +11,8 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
     '''Move ent 1 for time t according to its speed/position, respecting
        collisions with the Ents in the list obsts. Also advances obsts
        forward'''
-    #print "\tcoll_move t=%s, ent=%s" % (tstep, ent)
+    #print "coll_move t=%s, ent=%s" % (tstep, ent)
+    #print "\tplat: %s" % level[-1]
 
     # detect collisions
     rec_t = tstep # time of the soonest collision
@@ -22,7 +23,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
         a1,a2,b1,b2 = obst.left(), obst.top(), obst.right(), obst.bottom()
         sp = vsub(ent.speed, obst.speed)
 
-        if sp[0] == 0:
+        if float_eq(sp[0],0):
             # TODO: is this check numerically bad?
             lb_hori = -inf if d1>a1 and c1<b1 else inf
             ub_hori = -lb_hori
@@ -33,7 +34,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
             lb_hori = (b1-c1)/sp[0]
             ub_hori = (a1-d1)/sp[0]
 
-        if sp[1] == 0:
+        if float_eq(sp[1],0):
             lb_vert = -inf if d2>a2 and c2<b2 else inf
             ub_vert = -lb_vert
         elif sp[1] > 0:
@@ -77,7 +78,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
 
     #print "\tend: rec_t=%s, rec_type=%s, ent=%s" % (rec_t, rec_type, ent)
 
-    if (rec_t == 0.0 and zeros >= 2) or (rec_obst and rec_obst.deadly):
+    if (float_eq(rec_t,0.0) and zeros >= 2) or (rec_obst and rec_obst.deadly):
         print "User died!"
         ent.kill()
         for obst in obsts:
@@ -85,6 +86,6 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
             obst.ypos += obst.speed[1] * tstep
         return
 
-    if rec_t < tstep:
-        newzeros = zeros+1 if rec_t == 0.0 else 0
+    if tstep - rec_t > EPSILON:
+        newzeros = zeros+1 if float_eq(rec_t,0.0) else 0
         coll_move(ent, obsts, tstep-max(0,rec_t), newzeros)

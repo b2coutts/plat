@@ -42,16 +42,5 @@ def rect_coll(r1,r2,epsilon):
            r2[0] <= r1[0] + r1[2] + epsilon and\
            r2[1] <= r1[1] + r1[3] + epsilon
 
-def cast(p, v, l):
-    '''Given a starting point p, a direction v, and a line segment l (pair of
-       endpoints), produce the positive number t such that p+tv is in l, or
-       float('inf') if no such t exists'''
-    d = vperp2(vsub(l[1],  l[0]))
-    alpha = vdot(d,l[0])
-    if vdot(d,v) == 0:
-        return float('inf')
-    t = (alpha - vdot(d,p)) / vdot(d,v)
-    return t if t>=0 else float('inf')
-
 def float_eq(a,b):
     return abs(a-b) < EPSILON

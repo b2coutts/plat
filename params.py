@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # temporary
-SPAWN                   = 20, 560
+SPAWN                   = 20, 540
 
 SCREEN_SIZE             = 800, 600
 #SCREEN_SIZE             = 1280, 800

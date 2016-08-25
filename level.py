@@ -31,10 +31,10 @@ def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
     def beh(plat, frame):
         # reverse direction if necessary
         if plat.atob:
-            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], b)) > 0:
+            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], b)) > EPSILON:
                 plat.atob = False
         else:
-            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], a)) < 0:
+            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], a)) < EPSILON:
                 plat.atob = True
 
         dirn = vsub(b,a) if plat.atob else vsub(a,b)
@@ -56,14 +56,11 @@ border  = [Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth),\
            Ent(-bwidth, h, w + 2*bwidth, bwidth)]
 vborder = [mkplat(0, 0, 40, 1), mkplat(0, 0, 1, 30), mkplat(0, 580, 40, 1),\
            mkplat(780, 0, 1, 30)]
-lavapit = [mkplat(170, 420, 1, 8), mkplat(290, 420, 1, 8), mkplat(170, 560, 7, 1),\
-           mkplat(190, 480, 5, 4, img=kbimg, deadly=True)]
-elev    = [mkosc((90,560), (90,420), 4, 1, 1.5)]
-laggers = [mkosc((90,20+30*x), (490,20+30*x), 4, 1, x/2.0) for x in range(20)]
-circle  = [mkplat(500, 200, 5, 1, beh=circle_beh)]
-weird   = [mkosc((90,560), (230.023, 420.432), 4, 1, 1.5)]
+lavapit = [mkplat(170, 400, 1, 8), mkplat(290, 400, 1, 8), mkplat(170, 540, 7, 1),\
+           mkplat(190, 460, 5, 4, img=kbimg, deadly=True)]
+#elev    = [mkosc((90,540), (90,400), 4, 1, 1.5)]
+elev    = [mkosc((90,540), (90,520), 4, 1, 1.5)]
 
 
 # TODO: this should probably just be a class or something
-#level = border + vborder + lavapit + elev + circle
-level = border + vborder + weird + circle
+level = border + vborder + lavapit + elev
