@@ -57,4 +57,4 @@ laggers = [mkosc((90,20+30*x), (490,20+30*x), 4, 1, x/2.0) for x in range(20)]
 
 
 # TODO: this should probably just be a class or something
-level = border + vborder + lavapit + elev + laggers
+level = border + vborder + lavapit + elev #+ laggers

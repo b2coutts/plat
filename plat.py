@@ -29,8 +29,7 @@ avg_render_time = 0
 avg_frame_time = 0
 while 1:
     frame += 1
-    time.sleep(FRAME_LENGTH)
-    t0 = time.time() * 1000
+    t0 = time.time()
 
     # check if user has fallen off platform
     if user.grounded and not can_ground(user, user.grounded):
@@ -47,7 +46,7 @@ while 1:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            print 'avg render/frame: %sms,  %sms' % (avg_render_time, avg_frame_time)
+            print 'avg render/frame: %sms,  %sms' % (avg_render_time*1000, avg_frame_time*1000)
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == keys.JUMP and user.grounded:
@@ -116,15 +115,18 @@ while 1:
         thing.unblit(screen, unblitted_rects)
     for thing in [user] + level:
         thing.blitto(screen, unblitted_rects, dirty_rects)
-    b4render = time.time() * 1000
+    b4render = time.time()
     pygame.display.update(dirty_rects)
 
     # gather benchmark data
-    after_render = time.time() * 1000
+    after_render = time.time()
     frame_time = after_render - t0
-    render_time = time.time() * 1000 - b4render
-    print "render/frame: %sms,  %sms" % (render_time, frame_time)
+    render_time = time.time() - b4render
+    print "render/frame: %sms,  %sms" % (render_time*1000, frame_time*1000)
     avg_render_time -= avg_render_time/(frame+1)
     avg_render_time += render_time/(frame+1)
     avg_frame_time  -= avg_frame_time/(frame+1)
     avg_frame_time  += frame_time/(frame+1)
+
+    if after_render < t0 + FRAME_LENGTH:
+        time.sleep(t0+FRAME_LENGTH - after_render)
