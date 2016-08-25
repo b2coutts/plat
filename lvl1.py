@@ -9,41 +9,6 @@ from Ent import Ent
 blockimg = pygame.image.load("img/block.png").convert()
 kbimg    = pygame.image.load("img/kb.png").convert()
 
-def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
-    right = w*img.get_width()
-    bottom = h*img.get_height()
-    platimg = pygame.Surface((right, bottom))
-    x = y = 0
-    while x < right:
-        if x > right - img.get_width():
-            x = right - img.get_width()
-        while y < bottom:
-            if y > bottom - img.get_height():
-                y = bottom - img.get_height()
-            platimg.blit(img, (x,y))
-            y += img.get_height()
-        y = 0
-        x += img.get_width()
-    return Ent(xp, yp, w*img.get_width(), h*img.get_height(),\
-               platimg.convert(), spd[:], beh=beh, deadly=deadly)
-
-# platform whose pos oscillates between a and b, with speed magnitude s
-def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
-    def beh(plat, frame):
-        # reverse direction if necessary
-        if plat.atob:
-            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], b)) > EPSILON:
-                plat.atob = False
-        else:
-            if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], a)) < EPSILON:
-                plat.atob = True
-
-        dirn = vsub(b,a) if plat.atob else vsub(a,b)
-        plat.speed = vscale(s/vnorm(dirn), dirn)
-    plat = mkplat(a[0], a[1], w, h, img=img, beh=beh, deadly=deadly)
-    plat.atob = True
-    return plat
-
 bwidth = 20
 w,h = params.SCREEN_SIZE
 
@@ -71,8 +36,11 @@ stream  = [mkplat(100,180,2,1), mkplat(100, 200, 2, 1, img=kbimg, deadly=True),\
            mkplat(100,0,1,9)]
 annoy   = [mkplat(480,20,1,8), mkplat(540,20,1,8), mkplat(600,20,1,8)]
 blocker = [mkplat(180,180,12,1)]
+cp1     = [mkcheckpoint(690,200)]
+stair   = [mkplat(40,200,1,1), mkplat(20,120,1,1), mkplat(40,50,1,1)]
+fin     = [mkfinish(40,30)]
 obsts   = border + vborder + lavapit + elev1 + floors2 + mover1 + elev2 +\
-          barrier + stream + blocker + annoy
+          barrier + stream + blocker + annoy + cp1 + stair + fin
 
 # ticks
 proj    = [mkshooter((120,200), 1, 1, [5,0], 60, 104, kbimg, True)]

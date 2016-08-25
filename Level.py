@@ -3,14 +3,17 @@
 import math, pygame
 
 from Ent import Ent
+from util import *
 import params
 
 blockimg = pygame.image.load("img/block.png").convert()
 kbimg    = pygame.image.load("img/kb.png").convert()
+cpimg    = pygame.image.load("img/cp.png").convert_alpha()
+finimg   = pygame.image.load("img/finish.png").convert_alpha()
 
 class Level:
     # obsts : list of obstacle Ents
-    # ticks : list of tick functions tick(level, frame)
+    # ticks : list of tick functions tick(level, frame, user)
     # ghosts: list of rects that are being deleted
     # spawn : current user spawn point
     
@@ -19,6 +22,7 @@ class Level:
         self.ticks  = []
         self.ghosts = []
         self.spawn  = spawn
+        self.add_obst(mkcheckpoint(spawn[0], spawn[1]))
 
     def tick(self, frame, user):
         for tick in self.ticks:
@@ -60,7 +64,7 @@ def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False):
 
 # makes a platform whose pos oscillates between a and b, with speed magnitude s
 def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
-    def beh(plat, frame):
+    def beh(plat, level, user, frame):
         # reverse direction if necessary
         if plat.atob:
             if vdot(vsub(b,a), vsub([plat.xpos,plat.ypos], b)) > EPSILON:
@@ -78,10 +82,27 @@ def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
 # makes a projectile shooter (tick function)
 def mkshooter(spawn, w, h, spd, period, dur, img, deadly):
     def tick(level, frame, user):
-        def beh(obst, frame2):
+        def beh(obst, level2, user, frame2):
             if frame2-frame >= dur:
                 level.rm_obst(obst.level_idx)
         if frame%period == 0:
             level.add_obst(mkplat(spawn[0], spawn[1], w, h, spd, img, beh,\
                                   deadly))
     return tick
+
+# makes a checkpoint
+def mkcheckpoint(x, y, img=cpimg):
+    def beh(obst, level, user, frame):
+        if obst.get_rect().colliderect(user.get_rect()):
+            level.spawn = [x,y]
+    return Ent(x, y, cpimg.get_width(), cpimg.get_height(), cpimg, beh=beh,\
+               solid=False)
+
+# makes a finish flag
+def mkfinish(x, y):
+    def beh(obst, level, user, frame):
+        if obst.get_rect().colliderect(user.get_rect()):
+            # TODO: winning code
+            print 'You win!'
+    return Ent(x, y, finimg.get_width(), finimg.get_height(), finimg, beh=beh,\
+               solid=False)

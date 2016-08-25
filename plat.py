@@ -45,7 +45,7 @@ while 1:
     level.tick(frame, user)
     for obst in level.obsts:
         if obst.behaviour:
-            obst.behaviour(obst, frame)
+            obst.behaviour(obst, level, user, frame)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -111,7 +111,7 @@ while 1:
     
     print "speed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    #print "plat: %s" % level.obsts[-1]
+    #print "plat: %s" % level.obsts[29]
     coll_move(user, level)
 
     # TODO: don't flip every frame
@@ -122,7 +122,7 @@ while 1:
     dirty_rects = unblitted_rects[:]
     for thing in [user] + level.obsts:
         thing.unblit(screen, unblitted_rects)
-    for thing in [user] + level.obsts:
+    for thing in level.obsts + [user]:
         thing.blitto(screen, unblitted_rects, dirty_rects)
     b4render = time.time()
     pygame.display.update(dirty_rects)

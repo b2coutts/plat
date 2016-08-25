@@ -11,11 +11,11 @@ class Ent:
     # speed
     # grounded
     # behaviour
-    # deadly
+    # deadly, solid
     # level, level_idx
 
     def __init__(self, x, y, w, h, s=False, spd=[0,0], grd=False, beh=False,\
-                       deadly=False):
+                       deadly=False, solid=True):
         self.xpos       = x
         self.ypos       = y
         self.oldx       = None
@@ -28,10 +28,16 @@ class Ent:
         self.behaviour  = beh
         self.jumping    = False
         self.deadly     = deadly
+        self.solid      = solid
         self.level      = False
         self.level_idx  = False
 
     def __str__(self):
+        pkeys = "xpos", "ypos", "width", "height", "speed",\
+                "grounded", "deadly", "solid", "level_idx"
+        return 'Ent: ' + ', '.join([k + "=" + str(self.__dict__[k])
+                                    for k in pkeys if k in self.__dict__])
+
         return "Ent:  pos=(%s,%s),  size=%sx%s,  speed=%s, grounded=%s" %\
                (self.xpos, self.ypos, self.width, self.height, self.speed,\
                 self.grounded)

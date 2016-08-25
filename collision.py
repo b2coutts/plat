@@ -17,6 +17,8 @@ def coll_move(ent, level, tstep=1.0, zeros = 0):
     rec_obst = False
     c1,c2,d1,d2 = ent.left(), ent.top(), ent.right(), ent.bottom()
     for obst in level.obsts:
+        if not obst.solid:
+            continue
         a1,a2,b1,b2 = obst.left(), obst.top(), obst.right(), obst.bottom()
         sp = vsub(ent.speed, obst.speed)
 
