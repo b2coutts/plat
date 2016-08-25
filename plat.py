@@ -7,7 +7,7 @@ pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
 import keys
-from level import level
+from lvl1 import level
 from Ent import *
 from util import *
 from collision import coll_move
@@ -16,7 +16,9 @@ bgcolor = 255, 255, 255
 
 userimg = pygame.image.load("img/guy.png").convert_alpha()
 blockimg = pygame.image.load("img/block.png").convert()
-user = Ent(SPAWN[0], SPAWN[1], userimg.get_width(), userimg.get_height(), userimg)
+user = Ent(level.spawn[0], level.spawn[1], userimg.get_width(),\
+           userimg.get_height(), userimg)
+user.level = level
 
 def can_ground(usr, obst):
     return usr.right() >= obst.left() and\
@@ -27,21 +29,23 @@ frame = -1 # frame counter
 avg_render_time = 0
 avg_frame_time = 0
 while 1:
+    print ''
     frame += 1
     t0 = time.time()
 
     # check if user has fallen off platform
     if user.grounded and not can_ground(user, user.grounded):
         user.grounded = False
-        for obst in level:
+        for obst in level.obsts:
             if can_ground(user, obst):
                 user.grounded = obst
                 break
 
     # update platform speeds
-    for item in level:
-        if item.behaviour:
-            item.behaviour(item, frame)
+    level.tick(frame, user)
+    for obst in level.obsts:
+        if obst.behaviour:
+            obst.behaviour(obst, frame)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -62,7 +66,7 @@ while 1:
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
             mx, my = event.pos
             new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(), blockimg)
-            level.append(new)
+            level.add_obst(new)
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             dirn = vsub(event.pos, user.centre())
             user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
@@ -105,21 +109,24 @@ while 1:
             sp[1] += GRAV_ACCEL
             user.jumping = False
     
-    print "\nspeed: %s,  posn: (%s,%s), grounded: %s" %\
+    print "speed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    #print "plat: %s" % level[-1]
+    #print "plat: %s" % level.obsts[-1]
     coll_move(user, level)
 
     # TODO: don't flip every frame
     #screen.fill(bgcolor)
-    dirty_rects = []
     unblitted_rects = []
-    for thing in [user] + level:
+    for ghost in level.ghosts:
+        ghost.unblit(screen, unblitted_rects)
+    dirty_rects = unblitted_rects[:]
+    for thing in [user] + level.obsts:
         thing.unblit(screen, unblitted_rects)
-    for thing in [user] + level:
+    for thing in [user] + level.obsts:
         thing.blitto(screen, unblitted_rects, dirty_rects)
     b4render = time.time()
     pygame.display.update(dirty_rects)
+    level.ghosts = []
 
     # gather benchmark data
     after_render = time.time()

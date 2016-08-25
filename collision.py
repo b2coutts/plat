@@ -2,24 +2,21 @@
 
 import sys
 from util import *
-from level import level # TODO: remove
 
 inf = float('inf')
 
 # TODO: possible numerical issue when stepping obsts forward by awkward amounts
-def coll_move(ent, obsts, tstep=1.0, zeros = 0):
+def coll_move(ent, level, tstep=1.0, zeros = 0):
     '''Move ent 1 for time t according to its speed/position, respecting
-       collisions with the Ents in the list obsts. Also advances obsts
-       forward'''
+       collisions with the Ents in level.obsts. Also advances obsts forward'''
     #print "coll_move t=%s, ent=%s" % (tstep, ent)
-    #print "\tplat: %s" % level[-1]
 
     # detect collisions
     rec_t = tstep # time of the soonest collision
     rec_type = '-' # 'u' for up face, 'd' for down, 'l' left, 'r' right
     rec_obst = False
     c1,c2,d1,d2 = ent.left(), ent.top(), ent.right(), ent.bottom()
-    for obst in obsts:
+    for obst in level.obsts:
         a1,a2,b1,b2 = obst.left(), obst.top(), obst.right(), obst.bottom()
         sp = vsub(ent.speed, obst.speed)
 
@@ -66,7 +63,7 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
             rec_obst = obst
 
     # resolve collision detection; move to collision then slide along surface
-    for thing in [ent] + obsts:
+    for thing in [ent] + level.obsts:
         thing.xpos += thing.speed[0] * rec_t
         thing.ypos += thing.speed[1] * rec_t
     if rec_type in 'lr':
@@ -81,11 +78,11 @@ def coll_move(ent, obsts, tstep=1.0, zeros = 0):
     if (float_eq(rec_t,0.0) and zeros >= 2) or (rec_obst and rec_obst.deadly):
         print "User died!"
         ent.kill()
-        for obst in obsts:
+        for obst in level.obsts:
             obst.xpos += obst.speed[0] * tstep
             obst.ypos += obst.speed[1] * tstep
         return
 
     if tstep - rec_t > EPSILON:
         newzeros = zeros+1 if float_eq(rec_t,0.0) else 0
-        coll_move(ent, obsts, tstep-max(0,rec_t), newzeros)
+        coll_move(ent, level, tstep-max(0,rec_t), newzeros)
