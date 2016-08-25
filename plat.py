@@ -4,13 +4,17 @@ import sys, pygame, time
 from params import *
 
 pygame.init()
+pygame.mixer.init()
+
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
-import keys
+import keys, audio
 from lvl1 import level
 from Ent import *
 from util import *
 from collision import coll_move
+
+audio.bgm.play(loops=-1)
 
 bgcolor = 255, 255, 255
 
