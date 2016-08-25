@@ -35,7 +35,6 @@ class Ent:
 
     def unblit(self, screen, unblitted_rects):
         '''unblit self (in position from last frame), append to dirty_rects'''
-
         if self.sprite and self.oldx != None and\
            (self.oldx,self.oldy) != (round(self.xpos),round(self.ypos)):
             unimg = pygame.Surface((self.width, self.height))
@@ -64,7 +63,7 @@ class Ent:
 
     def get_rect(self):
         '''Gets the DRAW rect for self (rounded, not actual coords)'''
-        return pygame.Rect(round(self.xpos)-1, round(self.ypos)-1, self.width,\
+        return pygame.Rect(round(self.xpos), round(self.ypos), self.width,\
                            self.height)
 
     def centre(self):
