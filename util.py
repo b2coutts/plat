@@ -27,6 +27,11 @@ def vnorm(v):
     '''2-norm'''
     return math.sqrt(vdot(v,v))
 
+def rotccw(v, theta):
+    '''rotate 2D vector v counter-clockwise by theta'''
+    return [math.cos(theta)*v[0] - math.sin(theta)*v[1],
+            math.sin(theta)*v[0] + math.cos(theta)*v[1]]
+
 def amin(a,b):
     '''Produces whichever of a,b has lesser absolute value'''
     return a if abs(a) < abs(b) else b
