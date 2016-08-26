@@ -24,7 +24,7 @@ border  = [Ent(-bwidth, -bwidth, w + 2*bwidth, bwidth),\
 vborder = [mkplat(0, 0, 40, 1), mkplat(0, 0, 1, 30), mkplat(0, 580, 40, 1),\
            mkplat(780, 0, 1, 30)]
 lavapit = [mkplat(170, 400, 1, 8), mkplat(290, 400, 1, 8), mkplat(170, 540, 7, 1),\
-           mkplat(190, 410, 5, 6.5, img=kbimg, deadly=True)]
+           mkplat(190, 410, 5, 6.5, img=kbimg, deadly=True, killsfx=audio.sfx_fire)]
 elev1   = [mkosc((90,540), (90,400), 4, 1, 1.5)]
 floors2 = [mkplat(40, 220, 15, 1), mkplat(380, 220, 17, 1),\
            mkplat(0, 260, 36, 1), mkplat(700, 240, 1, 1)]
@@ -43,12 +43,12 @@ obsts   = border + vborder + lavapit + elev1 + floors2 + circler + elev2 +\
           barrier + stream + blocker + annoy + cp1 + stair + fin
 
 # ticks
-proj    = [mkshooter((120,200), 1, 1, [5,0], 60, 104, kbimg, True)]
+proj    = [mkshooter((120,200), 1, 1, [5,0], 60, 104, kbimg, True, audio.sfx_fire)]
 ticks   = proj
 
 
 # TODO: this should probably just be a class or something
-level = Level((20,560))
+level = Level([20,560])
 for obst in obsts:
     level.add_obst(obst)
 for tick in ticks:

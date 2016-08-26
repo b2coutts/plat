@@ -4,7 +4,7 @@ import math, pygame, sys
 
 from Ent import Ent
 from util import *
-import params
+import params, audio
 
 blockimg = pygame.image.load("img/block.png").convert()
 kbimg    = pygame.image.load("img/kb.png").convert()
@@ -46,7 +46,7 @@ class Level:
 
 # makes a standard platform
 def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False,\
-           solid=True):
+           solid=True, killsfx=audio.sfx_died):
     right = w*img.get_width()
     bottom = h*img.get_height()
     platimg = pygame.Surface((right, bottom))
@@ -61,8 +61,8 @@ def mkplat(xp, yp, w, h, spd=[0,0], img=blockimg, beh=False, deadly=False,\
             y += img.get_height()
         y = 0
         x += img.get_width()
-    return Ent(xp, yp, w*img.get_width(), h*img.get_height(),\
-               platimg.convert(), spd[:], beh=beh, deadly=deadly, solid=solid)
+    return Ent(xp, yp, w*img.get_width(), h*img.get_height(), platimg.convert(),\
+               spd[:], beh=beh, deadly=deadly, solid=solid, killsfx=killsfx)
 
 # makes a platform whose pos oscillates between a and b, with speed magnitude s
 def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
@@ -97,20 +97,22 @@ def mkcircler(c, r, w, h, T, theta, cw, img=blockimg, deadly=False,\
     return mkplat(x,y,w,h,[0,0], img, beh, deadly, solid)
 
 # makes a projectile shooter (tick function)
-def mkshooter(spawn, w, h, spd, period, dur, img, deadly):
+def mkshooter(spawn, w, h, spd, period, dur, img, deadly, killsfx=audio.sfx_died):
     def tick(level, frame, user):
-        def beh(obst, level2, user, frame2):
-            if frame2-frame >= dur:
-                level.rm_obst(obst.level_idx)
         if frame%period == 0:
+            def beh(obst, level2, user, frame2):
+                if frame2-frame >= dur:
+                    level.rm_obst(obst.level_idx)
             level.add_obst(mkplat(spawn[0], spawn[1], w, h, spd, img, beh,\
-                                  deadly))
+                           deadly, killsfx=killsfx))
     return tick
 
 # makes a checkpoint
 def mkcheckpoint(x, y, img=cpimg):
     def beh(obst, level, user, frame):
         if obst.get_rect().colliderect(user.get_rect()):
+            if level.spawn != [x,y]:
+                audio.play(audio.sfx_cp)
             level.spawn = [x,y]
     return Ent(x, y, img.get_width(), img.get_height(), img, beh=beh,\
                solid=False)

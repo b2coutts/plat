@@ -79,7 +79,7 @@ def coll_move(ent, level, tstep=1.0, zeros = 0):
 
     if (float_eq(rec_t,0.0) and zeros >= 2) or (rec_obst and rec_obst.deadly):
         print "User died!"
-        ent.kill()
+        ent.kill(rec_obst.killsfx)
         for obst in level.obsts:
             obst.xpos += obst.speed[0] * tstep
             obst.ypos += obst.speed[1] * tstep

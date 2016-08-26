@@ -4,7 +4,6 @@ import sys, pygame, time
 from params import *
 
 pygame.init()
-pygame.mixer.init()
 
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
@@ -14,14 +13,19 @@ from Ent import *
 from util import *
 from collision import coll_move
 
-audio.bgm.play(loops=-1)
+audio.init()
 
-bgcolor = 255, 255, 255
-
-userimg = pygame.image.load("img/lilguy.png").convert_alpha()
+userimgr = pygame.image.load("img/lilguy.png").convert_alpha()
+userimgl = pygame.transform.flip(userimgr,1,0)
 blockimg = pygame.image.load("img/block.png").convert()
-user = Ent(level.spawn[0], level.spawn[1], userimg.get_width(),\
-           userimg.get_height(), userimg)
+userright= True
+def usersprite(usr):
+    global userright
+    if usr.speed[0] != 0:
+        userright = usr.speed[0] > 0
+    return userimgr if userright else userimgl
+user = Ent(level.spawn[0], level.spawn[1], userimgr.get_width(),\
+           userimgr.get_height(), usersprite)
 user.level = level
 
 def can_ground(usr, obst):
@@ -59,6 +63,7 @@ while 1:
             if event.key == keys.JUMP and user.grounded:
                 user.grounded = False
                 user.jumping = 1
+                audio.play(audio.sfx_jump)
 
             # debug stuff
             if event.unicode == '+':
@@ -119,7 +124,6 @@ while 1:
     coll_move(user, level)
 
     # TODO: don't flip every frame
-    #screen.fill(bgcolor)
     unblitted_rects = []
     for ghost in level.ghosts:
         ghost.unblit(screen, unblitted_rects)

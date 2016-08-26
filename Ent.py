@@ -3,6 +3,7 @@
 import pygame
 from params import *
 from util import *
+import audio
 
 class Ent:
     # xpos, ypos  # top-left corner position; floats, round to pixels
@@ -13,9 +14,10 @@ class Ent:
     # behaviour
     # deadly, solid
     # level, level_idx
+    # killsfx
 
     def __init__(self, x, y, w, h, s=False, spd=[0,0], grd=False, beh=False,\
-                       deadly=False, solid=True):
+                       deadly=False, solid=True, killsfx=audio.sfx_died):
         self.xpos       = x
         self.ypos       = y
         self.oldx       = None
@@ -31,6 +33,7 @@ class Ent:
         self.solid      = solid
         self.level      = False
         self.level_idx  = False
+        self.killsfx    = killsfx
 
     def __str__(self):
         pkeys = "xpos", "ypos", "width", "height", "speed",\
@@ -58,6 +61,8 @@ class Ent:
         cury = round(self.ypos)
         if self.sprite and ((self.oldx,self.oldy) != (curx,cury) or\
                             self.get_rect().collidelist(unblitted_rects) != -1):
+            sprite = self.sprite(self) if hasattr(self.sprite, '__call__')\
+                     else self.sprite
             if self.oldx == None:
                 self.oldx = curx
                 self.oldy = cury
@@ -66,7 +71,7 @@ class Ent:
             dry1 = min(cury, self.oldy)
             dry2 = max(cury, self.oldy) + self.height
             dirty_rects.append((drx1, dry1, drx2-drx1, dry2-dry1))
-            screen.blit(self.sprite, (curx, cury))
+            screen.blit(sprite, (curx, cury))
             self.oldx = curx
             self.oldy = cury
 
@@ -94,7 +99,8 @@ class Ent:
         '''User speed after factoring in platform speed (if any)'''
         return vadd(self.speed, self.grounded.speed if self.grounded else [0,0])
 
-    def kill(self):
+    def kill(self, sfx = audio.sfx_died):
         self.xpos, self.ypos = self.level.spawn
         self.speed = [0,0]
         self.grounded = False
+        audio.play(sfx)
