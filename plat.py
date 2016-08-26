@@ -18,7 +18,7 @@ audio.bgm.play(loops=-1)
 
 bgcolor = 255, 255, 255
 
-userimg = pygame.image.load("img/guy.png").convert_alpha()
+userimg = pygame.image.load("img/lilguy.png").convert_alpha()
 blockimg = pygame.image.load("img/block.png").convert()
 user = Ent(level.spawn[0], level.spawn[1], userimg.get_width(),\
            userimg.get_height(), userimg)
