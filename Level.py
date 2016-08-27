@@ -36,7 +36,7 @@ class Level:
 
     def rm_obst(self, idx):
         self.ghosts.append(self.obsts[idx])
-        self.obsts[idx].xpos = self.obsts[idx].ypos = float('inf')
+        self.obsts[idx].xpos,self.obsts[idx].ypos = params.SCREEN_SIZE
         del self.obsts[idx]
         for i in range(idx,len(self.obsts)):
             self.obsts[i].level_idx -= 1
@@ -85,8 +85,7 @@ def mkosc(a, b, w, h, s, img=blockimg, deadly=False):
 # period T, initial angle theta, initial direction CW if cw else CCW.
 # TODO: should the centre of the platform have distance r from c, or the UL
 # corner?
-def mkcircler(c, r, w, h, T, theta, cw, img=blockimg, deadly=False,\
-              solid=True):
+def mkcircler(c, r, w, h, T, theta, cw, img=blockimg, deadly=False, solid=True):
     x,y = vadd(c, vscale(r, [math.cos(theta), math.sin(theta)]))
     def beh(plat, level, user, frame):
         f = frame % T
@@ -96,15 +95,23 @@ def mkcircler(c, r, w, h, T, theta, cw, img=blockimg, deadly=False,\
                                             (1 if cw else -1)*math.cos(angle)])
     return mkplat(x,y,w,h,[0,0], img, beh, deadly, solid)
 
+# makes a projectile
+def mkprojectile(spawn, w, h, spd, img, deadly, killsfx=audio.sfx_died):
+    def beh(obst, level, user, frame):
+        for obst2 in level.obsts:
+            if obst2.level_idx != obst.level_idx and\
+               rect_coll(obst.get_rect(), obst2.get_rect(), 0):
+                level.rm_obst(obst.level_idx)
+    ent = mkplat(spawn[0], spawn[1], w, h, spd, img, beh,\
+                 deadly, killsfx=killsfx)
+    ent.spec['fragile'] = True
+    return ent
+
 # makes a projectile shooter (tick function)
 def mkshooter(spawn, w, h, spd, period, dur, img, deadly, killsfx=audio.sfx_died):
     def tick(level, frame, user):
         if frame%period == 0:
-            def beh(obst, level2, user, frame2):
-                if frame2-frame >= dur:
-                    level.rm_obst(obst.level_idx)
-            level.add_obst(mkplat(spawn[0], spawn[1], w, h, spd, img, beh,\
-                           deadly, killsfx=killsfx))
+            level.add_obst(mkprojectile(spawn, w, h, spd, img, deadly, killsfx))
     return tick
 
 # makes a checkpoint

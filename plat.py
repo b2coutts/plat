@@ -51,6 +51,7 @@ while 1:
 
     # update platform speeds
     level.tick(frame, user)
+    #print "plat: %s" % level.obsts[-1]
     for obst in level.obsts:
         if obst.behaviour:
             obst.behaviour(obst, level, user, frame)
@@ -120,7 +121,7 @@ while 1:
     
     print "speed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    #print "plat: %s" % level.obsts[34]
+    print "plat: %s" % level.obsts[-1]
     coll_move(user, level)
 
     # TODO: don't flip every frame

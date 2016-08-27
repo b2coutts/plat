@@ -15,6 +15,7 @@ class Ent:
     # deadly, solid
     # level, level_idx
     # killsfx
+    # spec
 
     def __init__(self, x, y, w, h, s=False, spd=[0,0], grd=False, beh=False,\
                        deadly=False, solid=True, killsfx=audio.sfx_died):
@@ -34,6 +35,7 @@ class Ent:
         self.level      = False
         self.level_idx  = False
         self.killsfx    = killsfx
+        self.spec       = {}
 
     def __str__(self):
         pkeys = "xpos", "ypos", "width", "height", "speed",\

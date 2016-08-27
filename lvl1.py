@@ -34,7 +34,7 @@ barrier = [mkplat(660, 180, 1, 2)]
 stream  = [mkplat(100,180,2,1), mkplat(100, 200, 2, 1, img=kbimg, deadly=True),\
            mkplat(80,0,1,11, img=kbimg, deadly=True), mkplat(60,0,1,11),\
            mkplat(100,0,1,9)]
-annoy   = [mkplat(480,20,1,8), mkplat(540,20,1,8), mkplat(600,20,1,8)]
+annoy   = [mkplat(480,20,1,9), mkplat(540,20,1,9), mkplat(600,20,1,9)]
 blocker = [mkplat(180,180,12,1)]
 cp1     = [mkcheckpoint(690,200)]
 stair   = [mkplat(40,200,1,1), mkplat(20,120,1,1), mkplat(40,50,1,1)]
@@ -43,7 +43,7 @@ obsts   = border + vborder + lavapit + elev1 + floors2 + circler + elev2 +\
           barrier + stream + blocker + annoy + cp1 + stair + fin
 
 # ticks
-proj    = [mkshooter((120,200), 1, 1, [5,0], 60, 104, kbimg, True, audio.sfx_fire)]
+proj    = [mkshooter((140,205), 0.5, 0.5, [5,0], 60, 104, kbimg, True, audio.sfx_fire)]
 ticks   = proj
 
 
