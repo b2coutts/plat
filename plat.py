@@ -9,16 +9,21 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 
 import keys, audio
 from lvl1 import level
+from Level import *
 from Ent import *
 from util import *
 from collision import coll_move
 
 audio.init()
 
+start_time = time.time()
+
 userimgr = pygame.image.load("img/lilguy.png").convert_alpha()
 userimgl = pygame.transform.flip(userimgr,1,0)
 blockimg = pygame.image.load("img/block.png").convert()
+waterimg = pygame.image.load("img/water.png").convert_alpha()
 userright= True
+last_shot= -GUN_COOLDOWN
 def usersprite(usr):
     global userright
     if usr.speed[0] != 0:
@@ -58,7 +63,9 @@ while 1:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            print 'avg render/frame: %sms,  %sms' % (avg_render_time*1000, avg_frame_time*1000)
+            print '%s frames/%s sec. avg render/frame: %sms,  %sms' %\
+                  (frame, time.time()-start_time, avg_render_time*1000,\
+                   avg_frame_time*1000)
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == keys.JUMP and user.grounded:
@@ -78,8 +85,19 @@ while 1:
             new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(), blockimg)
             level.add_obst(new)
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            dirn = vsub(event.pos, user.centre())
-            user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
+            if MOUSE_MODE == 0:
+                dirn = vsub(event.pos, user.centre())
+                user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
+            elif MOUSE_MODE == 1:
+                if last_shot+GUN_COOLDOWN <= frame:
+                    spawn = [user.xpos + (14 if userright else 0), user.ypos+5]
+                    dirn  = vsub(event.pos, spawn)
+                    spd   = vscale(BULLET_SPEED/vnorm(dirn), dirn)
+                    bullet = mkprojectile(spawn, 1, 1, spd, waterimg, False)
+                    bullet.solid = False
+                    bullet.spec['fragile'] = True
+                    level.add_obst(bullet)
+                    last_shot = frame
 
     pr = pygame.key.get_pressed()
     sp = user.speed
@@ -121,7 +139,7 @@ while 1:
     
     print "speed: %s,  posn: (%s,%s), grounded: %s" %\
         (user.speed, user.xpos, user.ypos, user.grounded)
-    print "plat: %s" % level.obsts[-1]
+    #print "plat: %s" % level.obsts[-1]
     coll_move(user, level)
 
     # TODO: don't flip every frame
@@ -149,3 +167,5 @@ while 1:
 
     if after_render < t0 + FRAME_LENGTH:
         time.sleep(t0+FRAME_LENGTH - after_render)
+
+    print 'true time: %s' % (time.time() - t0)

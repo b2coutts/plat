@@ -1,5 +1,9 @@
 #!/usr/bin/env python2
 
+# debug constants
+# 0 for speed boosts, 1 for gun
+MOUSE_MODE              = 1
+
 SCREEN_SIZE             = 800, 600
 #SCREEN_SIZE             = 1280, 800
 
@@ -22,6 +26,9 @@ GRAV_ACCEL_RAT_MIN      = 0.5
 GRAV_ACCEL_RAT_COEF     = (GRAV_ACCEL_RAT_MIN-1) / (JUMP_ACCEL*JUMP_ACCEL_LEN)
 
 BOOST_SPEED             = 8.0
+
+BULLET_SPEED            = 10.0
+GUN_COOLDOWN            = 40
 
 # common buffer to consider 2 floats 'equal'
 EPSILON                 = 0.001

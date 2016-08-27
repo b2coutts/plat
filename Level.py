@@ -101,7 +101,9 @@ def mkprojectile(spawn, w, h, spd, img, deadly, killsfx=audio.sfx_died):
         for obst2 in level.obsts:
             if obst2.level_idx != obst.level_idx and\
                rect_coll(obst.get_rect(), obst2.get_rect(), 0):
+                print 'intersected with %s' % obst2
                 level.rm_obst(obst.level_idx)
+                break
     ent = mkplat(spawn[0], spawn[1], w, h, spd, img, beh,\
                  deadly, killsfx=killsfx)
     ent.spec['fragile'] = True
