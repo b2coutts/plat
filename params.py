@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 
 # debug constants
+# enables debug-only features
+DEBUG                   = True
 # 0 for speed boosts, 1 for gun
 MOUSE_MODE              = 1
 

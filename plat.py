@@ -72,23 +72,10 @@ while 1:
                 user.grounded = False
                 user.jumping = 1
                 audio.play(audio.sfx_jump)
-
-            # debug stuff
-            if event.unicode == '+':
-                FRAME_LENGTH /= 2.0
-            elif event.unicode == '-':
-                FRAME_LENGTH *= 2.0
             elif event.unicode == 'k':
                 user.kill()
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-            mx, my = event.pos
-            new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(), blockimg)
-            level.add_obst(new)
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if MOUSE_MODE == 0:
-                dirn = vsub(event.pos, user.centre())
-                user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
-            elif MOUSE_MODE == 1:
+            if MOUSE_MODE == 1:
                 if last_shot+GUN_COOLDOWN <= frame:
                     spawn = [user.xpos + (14 if userright else 0), user.ypos+5]
                     dirn  = vsub(event.pos, spawn)
@@ -98,6 +85,28 @@ while 1:
                     bullet.spec['fragile'] = True
                     level.add_obst(bullet)
                     last_shot = frame
+                    audio.play(audio.sfx_water)
+
+        # debug controls
+        if DEBUG:
+            if event.type == pygame.KEYDOWN:
+                if event.unicode == '+':
+                    FRAME_LENGTH /= 2.0
+                elif event.unicode == '-':
+                    FRAME_LENGTH *= 2.0
+                elif event.unicode == '0':
+                    MOUSE_MODE = 0
+                elif event.unicode == '1':
+                    MOUSE_MODE = 1
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if MOUSE_MODE == 0:
+                    dirn = vsub(event.pos, user.centre())
+                    user.speed = vscale(BOOST_SPEED/vnorm(dirn), dirn)
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                mx, my = event.pos
+                new = Ent(mx, my, blockimg.get_width(), blockimg.get_height(),\
+                          blockimg)
+                level.add_obst(new)
 
     pr = pygame.key.get_pressed()
     sp = user.speed
@@ -167,5 +176,3 @@ while 1:
 
     if after_render < t0 + FRAME_LENGTH:
         time.sleep(t0+FRAME_LENGTH - after_render)
-
-    print 'true time: %s' % (time.time() - t0)
