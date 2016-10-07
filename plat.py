@@ -140,9 +140,6 @@ while 1:
             sp[1] -= JUMP_ACCEL
             user.jumping += 1
         else:
-            yaccel = GRAV_ACCEL
-            if pr[keys.JUMP] and sp[1]<0:
-                yaccel *= ((1 - GRAV_ACCEL_RAT_COEF) * (-sp[1]))**2
             sp[1] += GRAV_ACCEL
             user.jumping = False
     
