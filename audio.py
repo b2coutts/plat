@@ -11,6 +11,7 @@ sfx_fire = pygame.mixer.Sound("audio/fire.wav")
 sfx_cp   = pygame.mixer.Sound("audio/cp.wav")
 sfx_water= pygame.mixer.Sound("audio/water.wav")
 sfx_dash = pygame.mixer.Sound("audio/dash.wav")
+sfx_blink= pygame.mixer.Sound("audio/blink.wav")
 
 def init():
     pygame.mixer.init()

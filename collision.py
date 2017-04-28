@@ -94,3 +94,28 @@ def coll_move(ent, level, tstep=1.0, zeros = 0):
     if tstep - rec_t > EPSILON:
         newzeros = zeros+1 if float_eq(rec_t,0.0) else 0
         coll_move(ent, level, tstep-max(0,rec_t), newzeros)
+
+def collides(ent, level):
+    '''Checks if a given ent collides with the level; if so, returns the
+       colliding obstacle, otherwise returns False'''
+    for thing in level.obsts:
+        if ent.xpos <= thing.xpos+thing.width and thing.xpos <= ent.xpos+ent.width and\
+           ent.ypos <= thing.ypos+thing.height and thing.ypos <= ent.ypos+ent.height:
+            return thing
+    return False
+
+def blink(ent, level, dirn, amt):
+    '''Attempts to teleport ent in direction dirn by amt steps (i.e., move by vscale(amt,dirn)).
+       Teleports by the maximum amount which avoids collisions.'''
+    if amt == 0:
+        return
+
+    oldx = ent.xpos
+    oldy = ent.ypos
+    newpos = vadd([ent.xpos, ent.ypos], vscale(amt, dirn))
+    ent.xpos = newpos[0]
+    ent.ypos = newpos[1]
+    if collides(ent, level):
+        ent.xpos = oldx
+        ent.ypos = oldy
+        blink(ent, level, dirn, amt-1)

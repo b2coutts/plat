@@ -37,6 +37,7 @@ class Ent:
         self.killsfx    = killsfx
         self.spec       = {}
         self.has_dash   = False
+        self.has_blink  = False
         self.dashing    = False
 
     def __str__(self):
