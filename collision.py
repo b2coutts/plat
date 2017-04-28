@@ -95,9 +95,10 @@ def coll_move(ent, level, tstep=1.0, zeros = 0):
         newzeros = zeros+1 if float_eq(rec_t,0.0) else 0
         coll_move(ent, level, tstep-max(0,rec_t), newzeros)
 
-def collides(ent, level):
-    '''Checks if a given ent collides with the level; if so, returns the
-       colliding obstacle, otherwise returns False'''
+def valid(ent, level):
+    '''Checks if a given ent position is valid, in the sense that it is in-bounds and does not
+       collide with an obstacle. If invalid, returns False; if valid, returns the colliding
+       obstacle, or 'oob' for out of bounds.  colliding obstacle, otherwise returns False'''
     for thing in level.obsts:
         if ent.xpos <= thing.xpos+thing.width and thing.xpos <= ent.xpos+ent.width and\
            ent.ypos <= thing.ypos+thing.height and thing.ypos <= ent.ypos+ent.height:
@@ -115,7 +116,7 @@ def blink(ent, level, dirn, amt):
     newpos = vadd([ent.xpos, ent.ypos], vscale(amt, dirn))
     ent.xpos = newpos[0]
     ent.ypos = newpos[1]
-    if collides(ent, level):
+    if valid(ent, level):
         ent.xpos = oldx
         ent.ypos = oldy
         blink(ent, level, dirn, amt-1)

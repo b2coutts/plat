@@ -9,7 +9,7 @@ from Ent import Ent
 blockimg = pygame.image.load("img/block.png").convert()
 kbimg    = pygame.image.load("img/kb.png").convert()
 
-bwidth = 20
+bwidth = params.BLINK_DIST*2
 w,h = params.SCREEN_SIZE
 
 def circle_beh(plat,frame):

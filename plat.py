@@ -24,6 +24,7 @@ blockimg = pygame.image.load("img/block.png").convert()
 waterimg = pygame.image.load("img/water.png").convert_alpha()
 userright= True
 last_shot= -GUN_COOLDOWN
+last_blink = -BLINK_COOLDOWN
 def usersprite(usr):
     global userright
     if usr.speed[0] != 0:
@@ -50,7 +51,6 @@ while 1:
     if user.grounded and not can_ground(user, user.grounded):
         user.grounded = False
         user.has_dash = True
-        user.has_blink = True
         for obst in level.obsts:
             if can_ground(user, obst):
                 user.grounded = obst
@@ -79,7 +79,6 @@ while 1:
             if event.key == keys.JUMP and user.grounded:
                 user.grounded = False
                 user.has_dash = True
-                user.has_blink = True
                 user.jumping = 1
                 audio.play(audio.sfx_jump)
             elif user.has_dash and not user.grounded and\
@@ -96,9 +95,9 @@ while 1:
                 elif event.key == keys.DASH_RIGHT:
                     user.speed[0] = DASH_SPEED
                 audio.play(audio.sfx_dash)
-            elif user.has_blink and not user.grounded and\
+            elif last_blink + BLINK_COOLDOWN <= frame and\
                  event.key in [keys.BLINK_LEFT, keys.BLINK_DOWN, keys.BLINK_UP, keys.BLINK_RIGHT]:
-                user.has_blink = False
+                user.grounded = False
                 user.speed[0] = user.speed[1] = 0
                 dirn = False
                 if event.key == keys.BLINK_LEFT:
@@ -111,6 +110,7 @@ while 1:
                     dirn = [1,0]
                 blink(user, level, dirn, BLINK_DIST)
                 audio.play(audio.sfx_blink)
+                last_blink = frame
             elif event.key == keys.SUICIDE:
                 user.kill()
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
