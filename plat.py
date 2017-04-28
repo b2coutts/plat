@@ -96,7 +96,6 @@ while 1:
                 normalize(user.speed, DASH_SPEED)
 
                 user.has_dash = False
-                print 'foo'
                 user.dashing  = DASH_DURATION
                 audio.play(audio.sfx_dash)
             elif last_blink + BLINK_COOLDOWN <= frame and event.key == keys.BLINK:
@@ -193,8 +192,9 @@ while 1:
             sp[1] += GRAV_ACCEL
             user.jumping = False
     
-    print "speed: %s,  posn: (%s,%s), has_dash: %s, dashing: %s\n%s" %\
-        (user.speed, user.xpos, user.ypos, user.has_dash, user.dashing, user.grounded)
+    print "speed: %s,  posn: (%s,%s), has_dash: %s, dashing: %s, blinkcd: %s\n%s" %\
+        (user.speed, user.xpos, user.ypos, user.has_dash, user.dashing,
+         max(0, last_blink + BLINK_COOLDOWN - frame), user.grounded)
     #print "plat: %s" % level.obsts[-1]
     coll_move(user, level)
 

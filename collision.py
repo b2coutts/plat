@@ -100,7 +100,8 @@ def valid(ent, level):
        collide with an obstacle. If invalid, returns False; if valid, returns the colliding
        obstacle, or 'oob' for out of bounds.  colliding obstacle, otherwise returns False'''
     for thing in level.obsts:
-        if ent.xpos < thing.xpos+thing.width and thing.xpos < ent.xpos+ent.width and\
+        if thing.solid and\
+           ent.xpos < thing.xpos+thing.width and thing.xpos < ent.xpos+ent.width and\
            ent.ypos < thing.ypos+thing.height and thing.ypos < ent.ypos+ent.height:
             return thing
     return False

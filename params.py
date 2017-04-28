@@ -24,7 +24,7 @@ DASH_DECEL              = 0.3
 DASH_DURATION           = 5
 
 BLINK_DIST              = 80
-BLINK_COOLDOWN          = 80
+BLINK_COOLDOWN          = 60
 
 AIR_ACCEL               = 0.3
 FRIC_DECEL              = 0.1
