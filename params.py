@@ -16,6 +16,8 @@ FRAME_LENGTH            = 0.0167
 #FRAME_LENGTH           = 0.167
 RUN_SPEED               = 3.5
 AIR_SPEED               = 3.5
+DASH_SPEED              = 10.0
+DASH_DURATION           = 5
 JUMP_ACCEL              = 1.7
 JUMP_ACCEL_LEN          = 5
 

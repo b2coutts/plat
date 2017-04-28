@@ -49,10 +49,17 @@ while 1:
     # check if user has fallen off platform
     if user.grounded and not can_ground(user, user.grounded):
         user.grounded = False
+        user.has_dash = True
         for obst in level.obsts:
             if can_ground(user, obst):
                 user.grounded = obst
                 break
+
+    # update user dash
+    if user.dashing:
+        user.dashing = user.dashing - 1
+        if not user.dashing:
+            user.speed[0] = user.speed[1] = 0
 
     # update platform speeds
     level.tick(frame, user)
@@ -70,9 +77,24 @@ while 1:
         elif event.type == pygame.KEYDOWN:
             if event.key == keys.JUMP and user.grounded:
                 user.grounded = False
+                user.has_dash = True
                 user.jumping = 1
                 audio.play(audio.sfx_jump)
-            elif event.unicode == 'k':
+            elif user.has_dash and not user.grounded and\
+                 event.key in [keys.DASH_LEFT, keys.DASH_DOWN, keys.DASH_UP, keys.DASH_RIGHT]:
+                user.has_dash = False
+                user.dashing  = DASH_DURATION
+                user.speed[0] = user.speed[1] = 0
+                if event.key == keys.DASH_LEFT:
+                    user.speed[0] = -DASH_SPEED
+                elif event.key == keys.DASH_DOWN:
+                    user.speed[1] = DASH_SPEED
+                elif event.key == keys.DASH_UP:
+                    user.speed[1] = -DASH_SPEED
+                elif event.key == keys.DASH_RIGHT:
+                    user.speed[0] = DASH_SPEED
+                audio.play(audio.sfx_dash)
+            elif event.key == keys.SUICIDE:
                 user.kill()
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if MOUSE_MODE == 1:
@@ -117,7 +139,8 @@ while 1:
             sp[0] -= RUN_SPEED
         elif pr[keys.RIGHT]:
             sp[0] += RUN_SPEED
-    else:
+    # do not accelerate if in the middle of a dash
+    elif not user.dashing:
         # handle horizontal speed/acceleration
         sgn = sp[0] / abs(sp[0]) if sp[0] != 0 else 1
         fdecel = FRIC_DECEL_SLOW if abs(sp[0] <= FRIC_DECEL_SLOW_THRES)\
@@ -136,9 +159,13 @@ while 1:
 
         # handle vertical speed/acceleration
         # TODO: terminal velocity?
-        if user.jumping and user.jumping <= JUMP_ACCEL_LEN and pr[keys.JUMP]:
-            sp[1] -= JUMP_ACCEL
-            user.jumping += 1
+        if user.jumping and user.jumping <= JUMP_ACCEL_LEN:
+            if pr[keys.JUMP]:
+                sp[1] -= JUMP_ACCEL
+                user.jumping += 1
+            else:
+                sp[1] = 0
+                user.jumping = False
         else:
             sp[1] += GRAV_ACCEL
             user.jumping = False

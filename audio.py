@@ -10,6 +10,7 @@ sfx_died = pygame.mixer.Sound("audio/died.wav")
 sfx_fire = pygame.mixer.Sound("audio/fire.wav")
 sfx_cp   = pygame.mixer.Sound("audio/cp.wav")
 sfx_water= pygame.mixer.Sound("audio/water.wav")
+sfx_dash = pygame.mixer.Sound("audio/dash.wav")
 
 def init():
     pygame.mixer.init()

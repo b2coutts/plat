@@ -36,6 +36,8 @@ class Ent:
         self.level_idx  = False
         self.killsfx    = killsfx
         self.spec       = {}
+        self.has_dash   = False
+        self.dashing    = False
 
     def __str__(self):
         pkeys = "xpos", "ypos", "width", "height", "speed",\
