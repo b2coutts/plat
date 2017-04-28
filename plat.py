@@ -77,38 +77,42 @@ while 1:
                    avg_frame_time*1000)
             sys.exit()
         elif event.type == pygame.KEYDOWN:
+            pr = pygame.key.get_pressed()
             if event.key == keys.JUMP and user.grounded:
                 user.grounded = False
                 user.has_dash = True
                 user.jumping = 1
                 audio.play(audio.sfx_jump)
-            elif user.has_dash and not user.grounded and\
-                 event.key in [keys.DASH_LEFT, keys.DASH_DOWN, keys.DASH_UP, keys.DASH_RIGHT]:
+            elif user.has_dash and not user.grounded and event.key == keys.DASH:
+                user.speed[0] = user.speed[1] = 0
+                if pr[keys.LEFT]:
+                    user.speed[0] = user.speed[0] - 1
+                if pr[keys.RIGHT]:
+                    user.speed[0] = user.speed[0] + 1
+                if pr[keys.UP]:
+                    user.speed[1] = user.speed[1] - 1
+                if pr[keys.DOWN]:
+                    user.speed[1] = user.speed[1] + 1
+                normalize(user.speed, DASH_SPEED)
+
                 user.has_dash = False
                 user.dashing  = DASH_DURATION
-                user.speed[0] = user.speed[1] = 0
-                if event.key == keys.DASH_LEFT:
-                    user.speed[0] = -DASH_SPEED
-                elif event.key == keys.DASH_DOWN:
-                    user.speed[1] = DASH_SPEED
-                elif event.key == keys.DASH_UP:
-                    user.speed[1] = -DASH_SPEED
-                elif event.key == keys.DASH_RIGHT:
-                    user.speed[0] = DASH_SPEED
                 audio.play(audio.sfx_dash)
-            elif last_blink + BLINK_COOLDOWN <= frame and\
-                 event.key in [keys.BLINK_LEFT, keys.BLINK_DOWN, keys.BLINK_UP, keys.BLINK_RIGHT]:
+            elif last_blink + BLINK_COOLDOWN <= frame and event.key == keys.BLINK:
                 user.grounded = False
                 user.speed[0] = user.speed[1] = 0
-                dirn = False
-                if event.key == keys.BLINK_LEFT:
-                    dirn = [-1,0]
-                elif event.key == keys.BLINK_DOWN:
-                    dirn = [0,1]
-                elif event.key == keys.BLINK_UP:
-                    dirn = [0,-1]
-                elif event.key == keys.BLINK_RIGHT:
-                    dirn = [1,0]
+                dirn = [0,0]
+
+                if pr[keys.LEFT]:
+                    dirn[0] = dirn[0] - 1
+                if pr[keys.RIGHT]:
+                    dirn[0] = dirn[0] + 1
+                if pr[keys.UP]:
+                    dirn[1] = dirn[1] - 1
+                if pr[keys.DOWN]:
+                    dirn[1] = dirn[1] + 1
+                normalize(dirn)
+
                 blink(user, level, dirn, BLINK_DIST)
                 audio.play(audio.sfx_blink)
                 last_blink = frame

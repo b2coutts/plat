@@ -27,6 +27,14 @@ def vnorm(v):
     '''2-norm'''
     return math.sqrt(vdot(v,v))
 
+def normalize(v, target = 1.0):
+    '''mutates a vector to have norm target, rescaling it to have norm 1; does nothing to zero
+       vector'''
+    nrm = vnorm(v)
+    if nrm > 0:
+        for i in range(len(v)):
+            v[i] = v[i] * (target/nrm)
+
 def rotccw(v, theta):
     '''rotate 2D vector v counter-clockwise by theta'''
     return [math.cos(theta)*v[0] - math.sin(theta)*v[1],
