@@ -78,10 +78,10 @@ def coll_move(ent, level, tstep=1.0, zeros = 0):
     if rec_obst and 'fragile' in rec_obst.spec:
         level.rm_obst(rec_obst.level_idx)
 
-    if rec_obst:
-        ent.dashing = False
-
-    #print "\tend: rec_t=%s, rec_type=%s, ent=%s" % (rec_t, rec_type, ent)
+    if rec_obst and ent.dashing:
+        ent.dashing = 0
+        ent.speed[0] = ent.speed[0] * DASH_DECEL
+        ent.speed[1] = ent.speed[1] * DASH_DECEL
 
     if (float_eq(rec_t,0.0) and zeros >= 2) or (rec_obst and rec_obst.deadly):
         print "User died!"
@@ -105,6 +105,7 @@ def valid(ent, level):
             return thing
     return False
 
+# TODO: this is pretty bad but I'm too busy to refactor or reimplement coll_move
 def blink(ent, level, dirn, amt):
     '''Attempts to teleport ent in direction dirn by amt steps (i.e., move by vscale(amt,dirn)).
        Teleports by the maximum amount which avoids collisions.'''
