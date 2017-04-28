@@ -60,7 +60,8 @@ while 1:
     if user.dashing:
         user.dashing = user.dashing - 1
         if not user.dashing:
-            user.speed[0] = user.speed[1] = 0
+            user.speed[0] = user.speed[0] * DASH_DECEL
+            user.speed[1] = user.speed[1] * DASH_DECEL
 
     # update platform speeds
     level.tick(frame, user)

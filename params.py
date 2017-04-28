@@ -20,6 +20,7 @@ JUMP_ACCEL              = 1.7
 JUMP_ACCEL_LEN          = 5
 
 DASH_SPEED              = 10.0
+DASH_DECEL              = 0.3
 DASH_DURATION           = 5
 
 BLINK_DIST              = 80
