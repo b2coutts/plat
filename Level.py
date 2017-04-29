@@ -36,7 +36,7 @@ class Level:
 
     def rm_obst(self, idx):
         self.ghosts.append(self.obsts[idx])
-        self.obsts[idx].xpos,self.obsts[idx].ypos = params.SCREEN_SIZE
+        self.obsts[idx].xpos,self.obsts[idx].ypos = params.GAME_SIZE
         del self.obsts[idx]
         for i in range(idx,len(self.obsts)):
             self.obsts[i].level_idx -= 1

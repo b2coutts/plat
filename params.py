@@ -6,8 +6,9 @@ DEBUG                   = True
 # 0 for speed boosts, 1 for gun
 MOUSE_MODE              = 1
 
-SCREEN_SIZE             = 800, 600
-#SCREEN_SIZE             = 1280, 800
+#GAME_SIZE               = 1280, 800
+GAME_SIZE               = 800, 600
+HUD_HEIGHT              = 52
 
 # amount of distance maintained between user and obstacles
 COLL_BUFFER             = 0.5

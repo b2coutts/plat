@@ -10,7 +10,7 @@ blockimg = pygame.image.load("img/block.png").convert()
 kbimg    = pygame.image.load("img/kb.png").convert()
 
 bwidth = params.BLINK_DIST*2
-w,h = params.SCREEN_SIZE
+w,h = params.GAME_SIZE
 
 def circle_beh(plat,frame):
     t = frame * (2*math.pi)/(60*10.0)

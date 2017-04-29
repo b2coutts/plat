@@ -5,9 +5,9 @@ from params import *
 
 pygame.init()
 
-screen = pygame.display.set_mode(SCREEN_SIZE)
+screen = pygame.display.set_mode(( GAME_SIZE[0], GAME_SIZE[1] + HUD_HEIGHT ))
 
-import keys, audio
+import keys, audio, hud
 from lvl1 import level
 from Level import *
 from Ent import *
@@ -242,6 +242,7 @@ while 1:
         thing.unblit(screen, unblitted_rects)
     for thing in level.obsts + [user]:
         thing.blitto(screen, unblitted_rects, dirty_rects)
+    hud.draw_skillbar(screen, dirty_rects)
     b4render = time.time()
     pygame.display.update(dirty_rects)
     level.ghosts = []
