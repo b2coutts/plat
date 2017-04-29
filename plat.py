@@ -51,7 +51,7 @@ def mk_effect(img, x, y, dur):
         if frame >= end:
             print 'foobar'
             level.rm_obst(obst.level_idx)
-    return Ent(x, y, img.get_width(), img.get_height(), blinkimg, solid=False, beh=beh)
+    return Ent(x, y, img.get_width(), img.get_height(), img, solid=False, beh=beh)
 
 frame = -1 # frame counter
 avg_render_time = 0
@@ -127,8 +127,19 @@ while 1:
                     dirn[1] = dirn[1] + 1
                 normalize(dirn)
 
-                level.add_obst(mk_effect(blinkimg, user.xpos, user.ypos, 10))
+                oldx, oldy = user.xpos, user.ypos
                 blink(user, level, dirn, BLINK_DIST)
+
+                w,h = user.width, user.height
+                xmin, xmax = int(min(user.xpos, oldx)), int(max(user.xpos, oldx))
+                ymin, ymax = int(min(user.ypos, oldy)), int(max(user.ypos, oldy))
+                linesfc = pygame.Surface((xmax-xmin+2, ymax-ymin+2), flags=pygame.SRCALPHA)
+                linesfc.fill((0,0,0,0))
+                line = pygame.draw.line(linesfc, (0,0,255),\
+                                        [int(oldx) - xmin, int(oldy) - ymin],\
+                                        [int(user.xpos) - xmin, int(user.ypos) - ymin], 3)
+                level.add_obst(mk_effect(linesfc, min(oldx, user.xpos) + w/2, min(oldy, user.ypos) + h/2, 10))
+                level.add_obst(mk_effect(blinkimg, oldx, oldy, 10))
                 level.add_obst(mk_effect(blinkimg, user.xpos, user.ypos, 10))
 
                 audio.play(audio.sfx_blink)
