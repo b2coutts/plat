@@ -14,6 +14,7 @@ from Ent import *
 from util import *
 from collision import coll_move, blink
 
+
 audio.init()
 
 start_time = time.time()
@@ -22,6 +23,8 @@ userimgr = pygame.image.load("img/lilguy.png").convert_alpha()
 userimgl = pygame.transform.flip(userimgr,1,0)
 blockimg = pygame.image.load("img/block.png").convert()
 waterimg = pygame.image.load("img/water.png").convert_alpha()
+blinkimg = pygame.image.load("img/blink.png").convert_alpha()
+
 userright= True
 last_shot= -GUN_COOLDOWN
 last_blink = -BLINK_COOLDOWN
@@ -38,6 +41,17 @@ def can_ground(usr, obst):
     return usr.right() >= obst.left() and\
            usr.left() <= obst.right() and\
            float_eq(usr.bottom(), obst.top())
+
+# makes a temporary visual effect
+def mk_effect(img, x, y, dur):
+    end = frame + dur
+    print 'target is %s' % end
+    def beh(obst, level, user, frame):
+        print 'cur is %s' % frame
+        if frame >= end:
+            print 'foobar'
+            level.rm_obst(obst.level_idx)
+    return Ent(x, y, img.get_width(), img.get_height(), blinkimg, solid=False, beh=beh)
 
 frame = -1 # frame counter
 avg_render_time = 0
@@ -113,7 +127,10 @@ while 1:
                     dirn[1] = dirn[1] + 1
                 normalize(dirn)
 
+                level.add_obst(mk_effect(blinkimg, user.xpos, user.ypos, 10))
                 blink(user, level, dirn, BLINK_DIST)
+                level.add_obst(mk_effect(blinkimg, user.xpos, user.ypos, 10))
+
                 audio.play(audio.sfx_blink)
                 last_blink = frame
             elif event.key == keys.SUICIDE:
@@ -192,6 +209,8 @@ while 1:
             sp[1] += GRAV_ACCEL
             user.jumping = False
     
+    print "Frame %s"  % frame
+    print "num_obsts: %s" % len(level.obsts)
     print "speed: %s,  posn: (%s,%s), has_dash: %s, dashing: %s, blinkcd: %s\n%s" %\
         (user.speed, user.xpos, user.ypos, user.has_dash, user.dashing,
          max(0, last_blink + BLINK_COOLDOWN - frame), user.grounded)
