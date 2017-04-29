@@ -135,9 +135,14 @@ while 1:
                 ymin, ymax = int(min(user.ypos, oldy)), int(max(user.ypos, oldy))
                 linesfc = pygame.Surface((xmax-xmin+2, ymax-ymin+2), flags=pygame.SRCALPHA)
                 linesfc.fill((0,0,0,0))
-                line = pygame.draw.line(linesfc, (0,0,255),\
-                                        [int(oldx) - xmin, int(oldy) - ymin],\
-                                        [int(user.xpos) - xmin, int(user.ypos) - ymin], 3)
+                blink_line_color = (0,230,230)
+                # kind of a hack, but oh well it works
+                if oldx == user.xpos or oldy == user.ypos:
+                    linesfc.fill(blink_line_color)
+                else:
+                    line = pygame.draw.line(linesfc, blink_line_color,\
+                                            [int(oldx) - xmin, int(oldy) - ymin],\
+                                            [int(user.xpos) - xmin, int(user.ypos) - ymin], 3)
                 level.add_obst(mk_effect(linesfc, min(oldx, user.xpos) + w/2, min(oldy, user.ypos) + h/2, 10))
                 level.add_obst(mk_effect(blinkimg, oldx, oldy, 10))
                 level.add_obst(mk_effect(blinkimg, user.xpos, user.ypos, 10))
