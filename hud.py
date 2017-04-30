@@ -9,39 +9,51 @@ SKILLBOX_DIMS = (36, 36)
 DASH_OFFSET   = (87, 2)
 BLINK_OFFSET  = (125, 2)
 SHOOT_OFFSET  = (163, 2)
+NAME_HEIGHT   = 10
+NAME_YOFFSET  = 38
+CD_COLOR      = (0,0,0,160)
 
 skillbarimg = pygame.image.load("img/skillbar.png").convert_alpha()
 
-def draw_progress(screen, x, y, w, h, prog, color = (30,30,30,80)):
+def draw_progress(screen, x, y, w, h, prog, color = CD_COLOR, overlay_name = True):
     '''draws a "clock" progress overlay over a square'''
     prog = 1-prog # I messed up
-    centre = x + w/2, y + h/2
+
+    # need to use an overlay for the alpha channel to work
+    overlay = pygame.Surface((w, h + NAME_HEIGHT), pygame.SRCALPHA)
 
     def sq(t):
         '''Produces the point on the boundary of the square at progess t'''
         if t < 1.0/8:
-            return [x + w/2 + 4*w*t , y]
+            return [w/2 + 4*w*t , 0]
         elif t < 3.0/8:
-            return [x+w-1 , y - h/2 + 4*h*t]
+            return [w-1 , - h/2 + 4*h*t]
         elif t < 5.0/8:
-            return [x + 5*w/2 - 4*w*t , y+h-1]
+            return [5*w/2 - 4*w*t , h-1]
         elif t < 7.0/8:
-            return [x, y + 7*h/2 - 4*h*t]
+            return [0, 7*h/2 - 4*h*t]
         else:
-            return [x - 7*w/2 + 4*w*t, y]
+            return [-7*w/2 + 4*w*t, 0]
 
     points = [0, 1.0/8, 3.0/8, 5.0/8, 7.0/8, 1]
     for i in range(5):
         if prog > points[i]:
-            triangle = [centre, sq(points[i]), sq(min(prog,points[i+1]))]
+            triangle = [(w/2,h/2), sq(points[i]), sq(min(prog,points[i+1]))]
             print 'triangle is %s' % triangle
-            pygame.draw.polygon(screen, color, triangle)
+            pygame.draw.polygon(overlay, color, triangle)
 
-def draw_skillbar(screen, blinkcd, shootcd, dirty_rects):
+    if overlay_name and prog > 0.0:
+        pygame.draw.rect(overlay, color, [0, NAME_YOFFSET, w, NAME_HEIGHT])
+
+    screen.blit(overlay, (x,y))
+
+def draw_skillbar(screen, has_dash, blinkcd, shootcd, dirty_rects):
     x0 = 0
     y0 = GAME_SIZE[1]
 
     screen.blit(skillbarimg, (x0, y0))
+    draw_progress(screen, x0+DASH_OFFSET[0], y0+DASH_OFFSET[1], SKILLBOX_DIMS[0],\
+                  SKILLBOX_DIMS[1], has_dash)
     draw_progress(screen, x0+BLINK_OFFSET[0], y0+BLINK_OFFSET[1], SKILLBOX_DIMS[0],\
                   SKILLBOX_DIMS[1], blinkcd)
     draw_progress(screen, x0+SHOOT_OFFSET[0], y0+SHOOT_OFFSET[1], SKILLBOX_DIMS[0],\

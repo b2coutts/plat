@@ -68,6 +68,7 @@ while 1:
         for obst in level.obsts:
             if can_ground(user, obst):
                 user.grounded = obst
+                user.has_dash = True
                 break
 
     # update user dash
@@ -256,7 +257,7 @@ while 1:
     blinkcd = 1.0*max(0,frame-last_blink)/params.BLINK_COOLDOWN
     shootcd = 1.0*max(0,frame-last_shot)/params.GUN_COOLDOWN
 
-    hud.draw_skillbar(screen, blinkcd, shootcd, dirty_rects)
+    hud.draw_skillbar(screen, user.has_dash, blinkcd, shootcd, dirty_rects)
     b4render = time.time()
     pygame.display.update(dirty_rects)
     level.ghosts = []

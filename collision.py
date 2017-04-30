@@ -74,6 +74,7 @@ def coll_move(ent, level, tstep=1.0, zeros = 0):
         ent.speed[1] = rec_obst.speed[1]
         if rec_type == 'u':
             ent.grounded = rec_obst
+            ent.has_dash = True
 
     if rec_obst and 'fragile' in rec_obst.spec:
         level.rm_obst(rec_obst.level_idx)
