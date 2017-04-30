@@ -12,3 +12,4 @@ The controls are:
 - `direction + J` to use a midair dash
 - `direction + K` to "blink" (teleport)
 - `direction + L` to fire a projectile (which nullifies fire projectiles)
+- `;` to toggle slow motion
