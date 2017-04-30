@@ -27,6 +27,10 @@ DASH_DURATION           = 5
 BLINK_DIST              = 80
 BLINK_COOLDOWN          = 60
 
+SLOW_MAX_CHARGE         = 60 * 2
+SLOW_RECH_SPEED         = 0.8
+SLOW_MULT               = 0.5
+
 AIR_ACCEL               = 0.3
 FRIC_DECEL              = 0.1
 FRIC_DECEL_SLOW         = 0.00

@@ -9,9 +9,12 @@ SKILLBOX_DIMS = (36, 36)
 DASH_OFFSET   = (87, 2)
 BLINK_OFFSET  = (125, 2)
 SHOOT_OFFSET  = (163, 2)
+SLOW_OFFSET   = (201, 2)
 NAME_HEIGHT   = 10
 NAME_YOFFSET  = 38
+
 CD_COLOR      = (0,0,0,160)
+SLOW_ON_COLOR = (0,200,200,100)
 
 skillbarimg = pygame.image.load("img/skillbar.png").convert_alpha()
 
@@ -47,7 +50,7 @@ def draw_progress(screen, x, y, w, h, prog, color = CD_COLOR, overlay_name = Tru
 
     screen.blit(overlay, (x,y))
 
-def draw_skillbar(screen, has_dash, blinkcd, shootcd, dirty_rects):
+def draw_skillbar(screen, has_dash, blinkcd, shootcd, slow_charge, slow_on, dirty_rects):
     x0 = 0
     y0 = GAME_SIZE[1]
 
@@ -58,6 +61,11 @@ def draw_skillbar(screen, has_dash, blinkcd, shootcd, dirty_rects):
                   SKILLBOX_DIMS[1], blinkcd)
     draw_progress(screen, x0+SHOOT_OFFSET[0], y0+SHOOT_OFFSET[1], SKILLBOX_DIMS[0],\
                   SKILLBOX_DIMS[1], shootcd)
+    draw_progress(screen, x0+SLOW_OFFSET[0], y0+SLOW_OFFSET[1], SKILLBOX_DIMS[0],\
+                  SKILLBOX_DIMS[1], slow_charge/SLOW_MAX_CHARGE, overlay_name=False)
+    if slow_on:
+        pygame.draw.rect(screen, SLOW_ON_COLOR, [x0+SLOW_OFFSET[0]-1, y0+SLOW_OFFSET[1]-1,
+                                                 SKILLBOX_DIMS[0]+2, SKILLBOX_DIMS[1]+2], 1)
 
     # TODO: in the future, should actually find dirty rects intelligently
     dirty_rects.append(( x0, y0, skillbarimg.get_width(), skillbarimg.get_height() ))

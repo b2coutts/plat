@@ -11,5 +11,6 @@ DOWN            = pygame.K_s
 DASH            = pygame.K_j
 BLINK           = pygame.K_k
 SHOOT           = pygame.K_l
+SLOW            = pygame.K_SEMICOLON
 
 SUICIDE         = pygame.K_x

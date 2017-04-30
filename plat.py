@@ -28,6 +28,8 @@ blinkimg = pygame.image.load("img/blink.png").convert_alpha()
 userright= True
 last_shot= -GUN_COOLDOWN
 last_blink = -BLINK_COOLDOWN
+slow_charge = SLOW_MAX_CHARGE
+slow_on = False
 def usersprite(usr):
     global userright
     if usr.speed[0] != 0:
@@ -77,6 +79,17 @@ while 1:
         if not user.dashing:
             user.speed[0] = user.speed[0] * DASH_DECEL
             user.speed[1] = user.speed[1] * DASH_DECEL
+
+    # update slow charge
+    if slow_on:
+        if slow_charge > 0:
+            slow_charge = slow_charge - 1.0
+        else:
+            slow_on = False
+            FRAME_LENGTH = FRAME_LENGTH * SLOW_MULT
+    else:
+        slow_charge = slow_charge + SLOW_RECH_SPEED
+    slow_charge = max(0, min(SLOW_MAX_CHARGE, slow_charge))
 
     # update platform speeds
     level.tick(frame, user)
@@ -172,6 +185,13 @@ while 1:
                     level.add_obst(bullet)
                     last_shot = frame
                     audio.play(audio.sfx_water)
+            elif event.key == keys.SLOW:
+                if slow_on:
+                    slow_on = False
+                    FRAME_LENGTH = FRAME_LENGTH * SLOW_MULT
+                elif slow_charge > 0:
+                    slow_on = True
+                    FRAME_LENGTH = FRAME_LENGTH / SLOW_MULT
             elif event.key == keys.SUICIDE:
                 user.kill()
 
@@ -238,6 +258,7 @@ while 1:
     
     print "Frame %s"  % frame
     print "num_obsts: %s" % len(level.obsts)
+    print "slow: %s, (%s/%s), fl=%s" % (slow_on, slow_charge, SLOW_MAX_CHARGE, FRAME_LENGTH)
     print "speed: %s,  posn: (%s,%s), has_dash: %s, dashing: %s, blinkcd: %s\n%s" %\
         (user.speed, user.xpos, user.ypos, user.has_dash, user.dashing,
          max(0, last_blink + BLINK_COOLDOWN - frame), user.grounded)
@@ -257,7 +278,7 @@ while 1:
     blinkcd = 1.0*max(0,frame-last_blink)/params.BLINK_COOLDOWN
     shootcd = 1.0*max(0,frame-last_shot)/params.GUN_COOLDOWN
 
-    hud.draw_skillbar(screen, user.has_dash, blinkcd, shootcd, dirty_rects)
+    hud.draw_skillbar(screen, user.has_dash, blinkcd, shootcd, slow_charge, slow_on, dirty_rects)
     b4render = time.time()
     pygame.display.update(dirty_rects)
     level.ghosts = []
