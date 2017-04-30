@@ -149,20 +149,30 @@ while 1:
 
                 audio.play(audio.sfx_blink)
                 last_blink = frame
-            elif event.key == keys.SUICIDE:
-                user.kill()
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if MOUSE_MODE == 1:
+            elif event.key == keys.SHOOT:
                 if last_shot+GUN_COOLDOWN <= frame:
                     spawn = [user.xpos + (14 if userright else 0), user.ypos+5]
-                    dirn  = vsub(event.pos, spawn)
-                    spd   = vscale(BULLET_SPEED/vnorm(dirn), dirn)
-                    bullet = mkprojectile(spawn, 1, 1, spd, waterimg, False)
+                    dirn = [0,0]
+                    if pr[keys.LEFT]:
+                        dirn[0] = dirn[0] - 1
+                    if pr[keys.RIGHT]:
+                        dirn[0] = dirn[0] + 1
+                    if pr[keys.UP]:
+                        dirn[1] = dirn[1] - 1
+                    if pr[keys.DOWN]:
+                        dirn[1] = dirn[1] + 1
+                    if dirn == [0,0]:
+                        dirn = [1,0] if userright else [-1,0]
+                    normalize(dirn, BULLET_SPEED)
+
+                    bullet = mkprojectile(spawn, 1, 1, dirn, waterimg, False)
                     bullet.solid = False
                     bullet.spec['fragile'] = True
                     level.add_obst(bullet)
                     last_shot = frame
                     audio.play(audio.sfx_water)
+            elif event.key == keys.SUICIDE:
+                user.kill()
 
         # debug controls
         if DEBUG:
