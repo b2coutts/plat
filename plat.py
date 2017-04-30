@@ -252,7 +252,11 @@ while 1:
         thing.unblit(screen, unblitted_rects)
     for thing in level.obsts + [user]:
         thing.blitto(screen, unblitted_rects, dirty_rects)
-    hud.draw_skillbar(screen, dirty_rects)
+
+    blinkcd = 1.0*max(0,frame-last_blink)/params.BLINK_COOLDOWN
+    shootcd = 1.0*max(0,frame-last_shot)/params.GUN_COOLDOWN
+
+    hud.draw_skillbar(screen, blinkcd, shootcd, dirty_rects)
     b4render = time.time()
     pygame.display.update(dirty_rects)
     level.ghosts = []
